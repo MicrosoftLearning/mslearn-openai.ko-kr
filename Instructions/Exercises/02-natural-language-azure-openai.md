@@ -1,83 +1,83 @@
 ---
 lab:
-    title: 'Use Azure OpenAI SDKs in your app'
+  title: 앱에서 Azure OpenAI SDK 사용
 ---
 
-# Use Azure OpenAI APIs in your app
+# 앱에서 Azure OpenAI API 사용
 
-With the Azure OpenAI Service, developers can create chatbots, language models, and other applications that excel at understanding natural human language. The Azure OpenAI provides access to pre-trained AI models, as well as a suite of APIs and tools for customizing and fine-tuning these models to meet the specific requirements of your application. In this exercise, you'll learn how to deploy a model in Azure OpenAI and use it in your own application.
+개발자는 Azure OpenAI Service를 사용하여 자연어를 이해하는 데 탁월한 챗봇, 언어 모델 및 기타 애플리케이션을 만들 수 있습니다. Azure OpenAI는 미리 학습된 AI 모델에 대한 액세스를 제공할 뿐만 아니라 애플리케이션의 특정 요구 사항을 충족하도록 이러한 모델을 사용자 지정하고 미세 조정할 수 있는 API 및 도구 모음도 제공합니다. 이 연습에서는 Azure OpenAI에서 모델을 배포하고 이를 자체 애플리케이션에서 사용하는 방법을 알아봅니다.
 
-In the scenario for this exercise, you will perform the role of a software developer who has been tasked to implement an app that can use generative AI to help provide hiking recommendations. The techniques used in the exercise can be applied to any app that wants to use Azure OpenAI APIs.
+이 연습의 시나리오에서 생성형 AI를 사용하여 하이킹 권장 사항을 제공할 수 있는 앱을 구현하는 임무를 맡은 소프트웨어 개발자의 역할을 수행하게 됩니다. 연습에 사용된 기술은 Azure OpenAI API를 사용하려는 모든 앱에 적용될 수 있습니다.
 
-This exercise will take approximately **30** minutes.
+이 연습은 약 **30**분 정도 소요됩니다.
 
-## Provision an Azure OpenAI resource
+## Azure OpenAI 리소스 프로비전
 
-If you don't already have one, provision an Azure OpenAI resource in your Azure subscription.
+아직 없는 경우 Azure 구독에서 Azure OpenAI 리소스를 프로비전합니다.
 
-1. Sign into the **Azure portal** at `https://portal.azure.com`.
-2. Create an **Azure OpenAI** resource with the following settings:
-    - **Subscription**: *Select an Azure subscription that has been approved for access to the Azure OpenAI service*
-    - **Resource group**: *Choose or create a resource group*
-    - **Region**: *Make a **random** choice from any of the following regions*\*
-        - Australia East
-        - Canada East
-        - East US
-        - East US 2
-        - France Central
-        - Japan East
-        - North Central US
-        - Sweden Central
-        - Switzerland North
-        - UK South
-    - **Name**: *A unique name of your choice*
-    - **Pricing tier**: Standard S0
+1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
+2. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
+    - **구독**: *Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
+    - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
+    - **지역**: *다음 지역 중 하나를 **임의로** 선택합니다.*\*
+        - 오스트레일리아 동부
+        - 캐나다 동부
+        - 미국 동부
+        - 미국 동부 2
+        - 프랑스 중부
+        - 일본 동부
+        - 미국 중북부
+        - 스웨덴 중부
+        - 스위스 북부
+        - 영국 남부
+    - **이름**: ‘원하는 고유한 이름’**
+    - **가격 책정 계층**: 표준 S0
 
-    > \* Azure OpenAI resources are constrained by regional quotas. The listed regions include default quota for the model type(s) used in this exercise. Randomly choosing a region reduces the risk of a single region reaching its quota limit in scenarios where you are sharing a subscription with other users. In the event of a quota limit being reached later in the exercise, there's a possibility you may need to create another resource in a different region.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 나열된 지역에는 이 연습에 사용된 모델 형식에 대한 기본 할당량이 포함되어 있습니다. 지역을 임의로 선택하면 다른 사용자와 구독을 공유하는 시나리오에서 단일 지역이 할당량 한도에 도달할 위험이 줄어듭니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-3. Wait for deployment to complete. Then go to the deployed Azure OpenAI resource in the Azure portal.
+3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
 
-## Deploy a model
+## 모델 배포
 
-Azure OpenAI provides a web-based portal named **Azure OpenAI Studio**, that you can use to deploy, manage, and explore models. You'll start your exploration of Azure OpenAI by using Azure OpenAI Studio to deploy a model.
+Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Azure OpenAI Studio**라는 웹 기반 포털을 제공합니다. Azure OpenAI Studio를 사용하여 모델을 배포함으로써 Azure OpenAI 탐색을 시작합니다.
 
-1. On the **Overview** page for your Azure OpenAI resource, use the **Go to Azure OpenAI Studio** button to open Azure OpenAI Studio in a new browser tab.
-2. In Azure OpenAI Studio, on the **Deployments** page, view your existing model deployments. If you don't already have one, create a new deployment of the **gpt-35-turbo-16k** model with the following settings:
-    - **Model**: gpt-35-turbo-16k *(if the 16k model isn't available, choose gpt-35-turbo)*
-    - **Model version**: Auto-update to default
-    - **Deployment name**: *A unique name of your choice. You'll use this name later in the lab.*
-    - **Advanced options**
-        - **Content filter**: Default
-        - **Deployment type**: Standard
-        - **Tokens per minute rate limit**: 5K\*
-        - **Enable dynamic quota**: Enabled
+1. Azure OpenAI 리소스의 **개요** 페이지에서 **Azure OpenAI Studio로 이동** 단추를 사용하여 새 브라우저 탭에서 Azure OpenAI Studio를 엽니다.
+2. Azure OpenAI Studio의 **배포** 페이지에서 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+    - **모델**: gpt-35-turbo-16k *(16k 모델을 사용할 수 없는 경우 gpt-35-turbo 선택)*
+    - **모델 버전**: 기본값으로 자동 업데이트
+    - **배포 이름**: *원하는 고유한 이름. 나중에 랩에서 이 이름을 사용하게 됩니다.*
+    - **고급 옵션**
+        - **콘텐츠 필터**: 기본값
+        - **배포 유형**: 표준
+        - **분당 토큰 속도 제한**: 5K\*
+        - **동적 할당량 사용**: 사용
 
-    > \* A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+    > \* 분당 5,000개 토큰의 속도를 제한하더라도 동일한 구독을 사용하는 다른 사용자에게 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
-## Prepare to develop an app in Visual Studio Code
+## Visual Studio Code에서 앱 개발 준비
 
-You'll develop your Azure OpenAI app using Visual Studio Code. The code files for your app have been provided in a GitHub repo.
+Visual Studio Code를 사용하여 Azure OpenAI 앱을 개발합니다. 앱의 코드 파일은 GitHub 리포지토리에 제공되었습니다.
 
-> **Tip**: If you have already cloned the **mslearn-openai** repo, open it in Visual Studio code. Otherwise, follow these steps to clone it to your development environment.
+> **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
-1. Start Visual Studio Code.
-2. Open the palette (SHIFT+CTRL+P) and run a **Git: Clone** command to clone the `https://github.com/MicrosoftLearning/mslearn-openai` repository to a local folder (it doesn't matter which folder).
-3. When the repository has been cloned, open the folder in Visual Studio Code.
+1. Visual Studio Code 시작
+2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
-    > **Note**: If Visual Studio Code shows you a pop-up message to prompt you to trust the code you are opening, click on **Yes, I trust the authors** option in the pop-up.
+    > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
 
-4. Wait while additional files are installed to support the C# code projects in the repo.
+4. 리포지토리의 C# 코드 프로젝트를 지원하는 추가 파일이 설치되는 동안 기다립니다.
 
-    > **Note**: If you are prompted to add required assets to build and debug, select **Not Now**.
+    > **참고**: 빌드 및 디버깅에 필요한 자산을 추가하라는 메시지가 표시되면 **나중에**를 선택합니다.
 
-## Configure your application
+## 애플리케이션 사용
 
-Applications for both C# and Python have been provided. Both apps feature the same functionality. First, you'll complete some key parts of the application to enable using your Azure OpenAI resource.
+C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모두 동일한 기능을 제공합니다. 먼저, Azure OpenAI 리소스를 사용할 수 있도록 애플리케이션의 일부 주요 부분을 완료합니다.
 
-1. In Visual Studio Code, in the **Explorer** pane, browse to the **Labfiles/02-azure-openai-api** folder and expand the **CSharp** or **Python** folder depending on your language preference. Each folder contains the language-specific files for an app into which you're going to integrate Azure OpenAI functionality.
-2. Right-click the **CSharp** or **Python** folder containing your code files and open an integrated terminal. Then install the Azure OpenAI SDK package by running the appropriate command for your language preference:
+1. Visual Studio Code의 **탐색기** 창에서 **Labfiles/02-azure-openai-api** 폴더를 찾아 언어 선택에 따라 **CSharp** 또는 **Python** 폴더를 확장합니다. 각 폴더에는 Azure OpenAI 기능을 통합할 앱에 대한 언어별 파일이 포함되어 있습니다.
+2. 코드 파일이 포함된 **CSharp** 또는 **Python** 폴더를 마우스 오른쪽 단추로 클릭하고 통합 터미널을 엽니다. 그런 다음, 언어 선택에 적절한 명령을 실행하여 Azure OpenAI SDK 패키지를 설치합니다.
 
-    **C#**:
+    **C#:**
 
     ```
     dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.14
@@ -89,21 +89,21 @@ Applications for both C# and Python have been provided. Both apps feature the sa
     pip install openai==1.13.3
     ```
 
-3. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the configuration file for your preferred language
+3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
     
-4. Update the configuration values to include:
-    - The  **endpoint** and a **key** from the Azure OpenAI resource you created (available on the **Keys and Endpoint** page for your Azure OpenAI resource in the Azure portal)
-    - The **deployment name** you specified for your model deployment (available in the **Deployments** page in Azure OpenAI Studio).
-5. Save the configuration file.
+4. 다음을 포함하도록 구성 값을 업데이트합니다.
+    - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
+    - 모델 배포에 대해 지정한 **배포 이름**(Azure OpenAI Studio의 **배포** 페이지에서 사용 가능)
+5. 구성 파일을 저장합니다.
 
-## Add code to use the Azure OpenAI service
+## Azure OpenAI 서비스를 사용하기 위한 코드 추가
 
-Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
+이제 Azure OpenAI SDK를 사용하여 배포된 모델을 사용할 준비가 되었습니다.
 
-1. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the code file for your preferred language, and replace the comment ***Add Azure OpenAI package*** with code to add the Azure OpenAI SDK library:
+1. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 코드 파일을 열고 ***Azure OpenAI 패키지 추가*** 주석을 Azure OpenAI SDK 라이브러리를 추가하는 코드로 바꿉니다.
 
     **C#**: Program.cs
 
@@ -119,7 +119,7 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
     from openai import AzureOpenAI
     ```
 
-1. In the application code for your language, replace the comment ***Initialize the Azure OpenAI client...*** with the following code to initialize the client and define our system message.
+1. 해당 언어의 애플리케이션 코드에서 ***Azure OpenAI 클라이언트 초기화...*** 주석을 다음 코드로 바꿔 클라이언트를 초기화하고 시스템 메시지를 정의합니다.
 
     **C#**: Program.cs
 
@@ -149,7 +149,7 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
         """
     ```
 
-1. Replace the comment ***Add code to send request...*** with the necessary code for building the request; specifying the various parameters for your model such as `messages` and `temperature`.
+1. ***요청을 보낼 코드 추가...*** 주석을 요청 빌드에 필요한 코드로 바꿉니다. `messages` 및 `temperature`와 같은 모델에 대한 다양한 매개 변수를 지정합니다.
 
     **C#**: Program.cs
 
@@ -196,35 +196,35 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
     print("Response: " + generated_text + "\n")
     ```
 
-1. Save the changes to your code file.
+1. 코드 파일에 변경 내용을 저장합니다.
 
-## Test your application
+## 애플리케이션 테스트
 
-Now that your app has been configured, run it to send your request to your model and observe the response.
+이제 앱이 구성되었으므로 앱을 실행하여 모델에 요청을 보내고 응답을 확인합니다.
 
-1. In the interactive terminal pane, ensure the folder context is the folder for your preferred language. Then enter the following command to run the application.
+1. 대화형 터미널 창에서 폴더 컨텍스트가 기본 설정 언어의 폴더인지 확인합니다. 그런 후 다음 명령을 입력하여 애플리케이션을 실행합니다.
 
     - **C#**: `dotnet run`
     - **Python**: `python test-openai-model.py`
 
-    > **Tip**: You can use the **Maximize panel size** (**^**) icon in the terminal toolbar to see more of the console text.
+    > **팁**: 터미널 도구 모음의 **패널 크기 최대화**(**^**) 아이콘을 사용하면 더 많은 콘솔 텍스트를 볼 수 있습니다.
 
-1. When prompted, enter the text `What hike should I do near Rainier?`.
-1. Observe the output, taking note that the response follows the guidelines provided in the system message you added to the *messages* array.
-1. Provide the prompt `Where should I hike near Boise? I'm looking for something of easy difficulty, between 2 to 3 miles, with moderate elevation gain.` and observe the output.
-1. In the code file for your preferred language, change the *temperature* parameter value in your request to **1.0** and save the file.
-1. Run the application again using the prompts above, and observe the output.
+1. 메시지가 나타나면 `What hike should I do near Rainier?` 텍스트를 입력합니다.
+1. 출력을 관찰하면서 응답이 *messages* 배열에 추가한 시스템 메시지에 제공된 지침을 따른다는 점에 유의해야 합니다.
+1. 프롬프트 `Where should I hike near Boise? I'm looking for something of easy difficulty, between 2 to 3 miles, with moderate elevation gain.`을 제공하고 출력을 관찰합니다.
+1. 기본 설정 언어의 코드 파일에서 요청의 *온도* 매개 변수 값을 **1.0**으로 변경하고 파일을 저장합니다.
+1. 위의 프롬프트를 사용하여 애플리케이션을 다시 실행하고 출력을 관찰합니다.
 
-Increasing the temperature often causes the response to vary, even when provided the same text, due to the increased randomness. You can run it several times to see how the output may change. Try using different values for your temperature with the same input.
+온도를 높이면 동일한 텍스트가 제공되더라도 임의성 증가로 인해 응답이 달라지는 경우가 많습니다. 여러 번 실행하여 출력이 어떻게 변경되는지 확인할 수 있습니다. 동일한 입력으로 온도에 다른 값을 사용해 보세요.
 
-## Maintain conversation history
+## 대화 기록 유지
 
-In most real-world applications, the ability to reference previous parts of the conversation allows for a more realistic interaction with an AI agent. The Azure OpenAI API is stateless by design, but by providing a history of the conversation in your prompt you enable the AI model to reference past messages.
+대부분의 실제 애플리케이션에서 대화의 이전 부분을 참조하는 기능을 사용하면 AI 에이전트와 보다 현실적인 상호 작용이 가능합니다. Azure OpenAI API는 기본적으로 상태 비저장이지만 프롬프트에 대화 기록을 제공하면 AI 모델이 과거 메시지를 참조할 수 있습니다.
 
-1. Run the app again and provide the prompt `Where is a good hike near Boise?`.
-1. Observe the output, and then prompt `How difficult is the second hike you suggested?`.
-1. The response from the model will likely indicate can't understand the hike you're referring to. To fix that, we can enable the model to have the past conversation messages for reference.
-1. In your application, we need to add the previous prompt and response to the future prompt we are sending. Below the definition of the **system message**, add the following code.
+1. 앱을 다시 실행하고 프롬프트 `Where is a good hike near Boise?`를 제공합니다.
+1. 출력을 관찰한 후 `How difficult is the second hike you suggested?` 프롬프트를 표시합니다.
+1. 모델의 응답은 언급한 하이킹을 이해할 수 없음을 나타낼 가능성이 높습니다. 이 문제를 해결하기 위해 모델이 참조용으로 과거 대화 메시지를 갖도록 할 수 있습니다.
+1. 애플리케이션에서는 이전 메시지를 추가하고 앞으로 보낼 메시지에 대한 응답을 추가해야 합니다. **시스템 메시지** 정의 아래에 다음 코드를 추가합니다.
 
     **C#**: Program.cs
 
@@ -243,7 +243,7 @@ In most real-world applications, the ability to reference previous parts of the 
     messages_array = [{"role": "system", "content": system_message}]
     ```
 
-1. Under the comment ***Add code to send request...***, replace all the code from the comment to the end of the **while** loop with the following code then save the file. The code is mostly the same, but now using the messages array to store the conversation history.
+1. ***요청을 보낼 코드 추가...*** 주석 아래에서 주석부터 **while** 루프 끝까지의 모든 코드를 다음 코드로 바꾼 후 파일을 저장합니다. 코드는 대부분 동일하지만 이제 메시지 배열을 사용하여 대화 기록을 저장합니다.
 
     **C#**: Program.cs
 
@@ -298,18 +298,18 @@ In most real-world applications, the ability to reference previous parts of the 
     print("Summary: " + generated_text + "\n")
     ```
 
-1. Save the file. In the code you added, notice we now append the previous input and response to the prompt array which allows the model to understand the history of our conversation.
-1. In the terminal pane, enter the following command to run the application.
+1. 파일을 저장합니다. 추가한 코드에서 이제 모델이 대화 기록을 이해할 수 있도록 프롬프트 배열에 이전 입력과 응답을 추가합니다.
+1. 터미널 창에서 다음 명령을 입력하여 애플리케이션을 실행합니다.
 
     - **C#**: `dotnet run`
     - **Python**: `python test-openai-model.py`
 
-1. Run the app again and provide the prompt `Where is a good hike near Boise?`.
-1. Observe the output, and then prompt `How difficult is the second hike you suggested?`.
-1. You'll likely get a response about the second hike the model suggested, which provides a much more realistic conversation. You can ask additional follow up questions referencing previous answers, and each time the history provides context for the model to answer.
+1. 앱을 다시 실행하고 프롬프트 `Where is a good hike near Boise?`를 제공합니다.
+1. 출력을 관찰한 후 `How difficult is the second hike you suggested?` 프롬프트를 표시합니다.
+1. 모델이 제안한 두 번째 하이킹에 대한 응답을 가져올 가능성이 높으며 이는 훨씬 더 현실적인 대화를 제공합니다. 이전 답변을 참조하여 추가 후속 질문을 할 수 있으며 기록이 모델이 답변할 컨텍스트를 제공할 때마다 가능합니다.
 
-    > **Tip**: The token count is only set to 1200, so if the conversation continues too long the application will run out of available tokens, resulting in an incomplete prompt. In production uses, limiting the length of the history to the most recent inputs and responses will help control the number of required tokens.
+    > **팁**: 토큰 수는 1200으로만 설정되므로 대화가 너무 오래 지속되면 애플리케이션에 사용 가능한 토큰이 부족해 불완전한 프롬프트가 표시됩니다. 프로덕션 용도에서는 기록 길이를 가장 최근의 입력 및 응답으로 제한하면 필요한 토큰 수를 제어하는 데 도움이 됩니다.
 
-## Clean up
+## 정리
 
-When you're done with your Azure OpenAI resource, remember to delete the deployment or the entire resource in the **Azure portal** at `https://portal.azure.com`.
+Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 배포 또는 전체 리소스를 삭제해야 합니다.

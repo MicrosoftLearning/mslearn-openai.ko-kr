@@ -1,111 +1,111 @@
 ---
 lab:
-    title: 'Get started with Azure OpenAI service'
+  title: Azure OpenAI 서비스 시작
 ---
 
-# Get started with Azure OpenAI service
+# Azure OpenAI 서비스 시작
 
-Azure OpenAI Service brings the generative AI models developed by OpenAI to the Azure platform, enabling you to develop powerful AI solutions that benefit from the security, scalability, and integration of services provided by the Azure cloud platform. In this exercise, you'll learn how to get started with Azure OpenAI by provisioning the service as an Azure resource and using Azure OpenAI Studio to deploy and explore generative AI models.
+Azure OpenAI Service는 OpenAI에서 개발한 생성 AI 모델을 Azure 플랫폼에 제공하여 Azure 클라우드 플랫폼에서 제공하는 서비스의 보안, 확장성 및 통합의 이점을 활용하는 강력한 AI 솔루션을 개발할 수 있도록 합니다. 이 연습에서는 서비스를 Azure 리소스로 프로비전하고 Azure OpenAI Studio를 사용하여 생성형 AI 모델을 배포 및 탐색하여 Azure OpenAI를 시작하는 방법을 알아봅니다.
 
-In the scenario for this exercise, you will perform the role of a software developer who has been tasked to implement an AI agent that can use generative AI to help a marketing organization improve its effectiveness at reaching customers and advertising new products. The techniques used in the exercise can be applied to any scenario where an organization wants to use generative AI models to help employees be more effective and productive.
+이 연습의 시나리오에서 생성형 AI를 사용하여 마케팅 조직이 고객에게 접근하고 신제품을 보급하는 효율성을 개선하는 데 도움을 줄 수 있는 AI 에이전트를 구현하는 임무를 맡은 소프트웨어 개발자의 역할을 수행하게 됩니다. 연습에 사용된 기술은 조직이 생성형 AI 모델을 사용하여 직원의 효율성과 생산성을 향상시키려는 모든 시나리오에 적용할 수 있습니다.
 
-This exercise takes approximately **30** minutes.
+이 연습에는 약 **30**분이 소요됩니다.
 
-## Provision an Azure OpenAI resource
+## Azure OpenAI 리소스 프로비전
 
-If you don't already have one, provision an Azure OpenAI resource in your Azure subscription.
+아직 없는 경우 Azure 구독에서 Azure OpenAI 리소스를 프로비전합니다.
 
-1. Sign into the **Azure portal** at `https://portal.azure.com`.
-2. Create an **Azure OpenAI** resource with the following settings:
-    - **Subscription**: *Select an Azure subscription that has been approved for access to the Azure OpenAI service*
-    - **Resource group**: *Choose or create a resource group*
-    - **Region**: *Make a **random** choice from any of the following regions*\*
-        - Australia East
-        - Canada East
-        - East US
-        - East US 2
-        - France Central
-        - Japan East
-        - North Central US
-        - Sweden Central
-        - Switzerland North
-        - UK South
-    - **Name**: *A unique name of your choice*
-    - **Pricing tier**: Standard S0
+1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
+2. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
+    - **구독**: *Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
+    - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
+    - **지역**: *다음 지역 중 하나를 **임의로** 선택합니다.*\*
+        - 오스트레일리아 동부
+        - 캐나다 동부
+        - 미국 동부
+        - 미국 동부 2
+        - 프랑스 중부
+        - 일본 동부
+        - 미국 중북부
+        - 스웨덴 중부
+        - 스위스 북부
+        - 영국 남부
+    - **이름**: ‘원하는 고유한 이름’**
+    - **가격 책정 계층**: 표준 S0
 
-    > \* Azure OpenAI resources are constrained by regional quotas. The listed regions include default quota for the model type(s) used in this exercise. Randomly choosing a region reduces the risk of a single region reaching its quota limit in scenarios where you are sharing a subscription with other users. In the event of a quota limit being reached later in the exercise, there's a possibility you may need to create another resource in a different region.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 나열된 지역에는 이 연습에 사용된 모델 형식에 대한 기본 할당량이 포함되어 있습니다. 지역을 임의로 선택하면 다른 사용자와 구독을 공유하는 시나리오에서 단일 지역이 할당량 한도에 도달할 위험이 줄어듭니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-3. Wait for deployment to complete. Then go to the deployed Azure OpenAI resource in the Azure portal.
+3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
 
-## Deploy a model
+## 모델 배포
 
-Azure OpenAI service provides a web-based portal named **Azure OpenAI Studio**, that you can use to deploy, manage, and explore models. You'll start your exploration of Azure OpenAI by using Azure OpenAI Studio to deploy a model.
+Azure OpenAI 서비스는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Azure OpenAI Studio**라는 웹 기반 포털을 제공합니다. Azure OpenAI Studio를 사용하여 모델을 배포함으로써 Azure OpenAI 탐색을 시작합니다.
 
-> **Note**: As you use Azure OpenAI Studio, message boxes suggesting tasks for you to perform may be displayed. You can close these and follow the steps in this exercise.
+> **참고**: Azure OpenAI Studio를 사용하면 수행할 작업을 제안하는 메시지 상자가 표시될 수 있습니다. 이를 닫고 이 연습의 단계를 따를 수 있습니다.
 
-1. In the Azure portal, on the **Overview** page for your Azure OpenAI resource, use the **Go to Azure OpenAI Studio** button to open Azure OpenAI Studio in a new browser tab.
+1. Azure Portal의 Azure OpenAI 리소스에 대한 **개요** 페이지에서 **Azure OpenAI Studio로 이동** 단추를 사용하여 새 브라우저 탭에서 Azure OpenAI Studio를 엽니다.
 
-    After the new tab opens, you can close any banner notifications for new preview services that are displayed at the top of the Azure OpenAI Studio page.
+    새 탭이 열리면 Azure OpenAI Studio 페이지 상단에 표시되는 새 미리 보기 서비스에 대한 배너 알림을 닫을 수 있습니다.
 
-1. In Azure OpenAI Studio, in the pane on the left, select the **Deployments** page and view your existing model deployments. If you don't already have one, create a new deployment of the **gpt-35-turbo-16k** model with the following settings:
-    - **Model**: gpt-35-turbo-16k *(if the 16k model isn't available, choose gpt-35-turbo)*
-    - **Model version**: Auto-update to default
-    - **Deployment name**: *A unique name of your choice*
-    - **Advanced options**
-        - **Content filter**: Default
-        - **Deployment type**: Standard
-        - **Tokens per minute rate limit**: 5K\*
-        - **Enable dynamic quota**: Enabled
+1. Azure OpenAI Studio의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+    - **모델**: gpt-35-turbo-16k *(16k 모델을 사용할 수 없는 경우 gpt-35-turbo 선택)*
+    - **모델 버전**: 기본값으로 자동 업데이트
+    - **배포 이름**: ‘원하는 고유한 이름’**
+    - **고급 옵션**
+        - **콘텐츠 필터**: 기본값
+        - **배포 유형**: 표준
+        - **분당 토큰 속도 제한**: 5K\*
+        - **동적 할당량 사용**: 사용
 
-    > \* A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+    > \* 분당 5,000개 토큰의 속도를 제한하더라도 동일한 구독을 사용하는 다른 사용자에게 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
-## Use the Chat playground
+## 채팅 플레이그라운드 사용
 
-Now that you've deployed a model, you can use it to generate responses based on natural language prompts. The *Chat* playground in Azure OpenAI Studio provides a chatbot interface for GPT 3.5 and higher models.
+이제 모델을 배포했으므로 이를 사용하여 자연어 프롬프트를 기반으로 응답을 생성할 수 있습니다. Azure OpenAI Studio의 *채팅* 플레이그라운드는 GPT 3.5 이상 모델을 위한 챗봇 인터페이스를 제공합니다.
 
-> **Note:** The *Chat* playground uses the *ChatCompletions* API rather than the older *Completions* API that is used by the *Completions* playground. The Completions playground is provided for compatibility with older models.
+> **참고:** *채팅* 플레이그라운드는 *완료* 플레이그라운드에서 사용되는 이전 *완료* API 대신 *ChatCompletions* API를 사용합니다. 완료 플레이그라운드는 이전 모델과의 호환성을 위해 제공됩니다.
 
-1. In the **Playground** section, select the **Chat** page. The **Chat** playground page consists of three main panels (which may be arranged right-to-left horizontally, or top-to-bottom vertically depending on your screen resolution):
-    - **Setup** - used to set the context for the model's responses.
-    - **Chat session** - used to submit chat messages and view responses.
-    - **Configuration** - used to configure settings for the model deployment.
-1. In the **Configuration** panel, ensure that your gpt-35-turbo-16k model deployment is selected.
-1. In the **Setup** panel, review the default **System message**, which should be *You are an AI assistant that helps people find information.* The system message is included in prompts submitted to the model, and provides context for the model's responses; setting expectations about how an AI agent based on the model should interact with the user.
-1. In the **Chat session** panel, enter the user query `How can I use generative AI to help me market a new product?`
+1. **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 세 가지 기본 패널로 구성됩니다(화면 해상도에 따라 오른쪽에서 왼쪽으로 수평으로 배열되거나 위에서 아래로 수직으로 배열될 수 있음).
+    - **설정** - 모델의 응답에 대한 컨텍스트를 설정하는 데 사용됩니다.
+    - **채팅 세션** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
+    - **구성** - 모델 배포에 대한 설정을 구성하는 데 사용됩니다.
+1. **구성** 패널에서 gpt-35-turbo-16k 모델 배포가 선택되었는지 확인합니다.
+1. **설정** 패널에서 기본 **시스템 메시지**를 검토합니다. 이 메시지는 *사용자가 정보를 찾는 데 도움이 되는 AI 도우미*입니다. 시스템 메시지는 모델에 제출된 프롬프트에 포함되며 모델의 응답에 대한 컨텍스트를 제공합니다. 모델을 기반으로 하는 AI 에이전트가 사용자와 상호 작용하는 방식에 대한 예상 결과치를 설정합니다.
+1. **채팅 세션** 패널에서 사용자 쿼리 `How can I use generative AI to help me market a new product?` 입력
 
-    > **Note**: You may receive a response that the API deployment is not yet ready. If so, wait for a few minutes and try again.
+    > **참고**: API 배포가 아직 준비되지 않았다는 응답을 받을 수 있습니다. 그렇다면 몇 분 정도 기다렸다가 다시 시도합니다.
 
-1. Review the response, noting that the model has generated a cohesive natural language answer that is relevant to the query with which it was prompted.
-1. Enter the user query `What skills do I need if I want to develop a solution to accomplish this?`.
-1. Review the response, noting that the chat session has retained the conversational context (so "this" is interpreted as a generative AI solution for marketing). This contextualization is achieved by including the recent conversation history in each successive prompt submission, so the prompt sent to the model for the second query included the original query and response as well as the new user input.
-1. In the **Chat session** panel toolbar, select **Clear chat** and confirm that you want to restart the chat session.
-1. Enter the query `Can you help me find resources to learn those skills?` and review the response, which should be a valid natural language answer, but since the previous chat history has been lost, the answer is likely to be about finding generic skilling resources rather than being related to the specific skills needed to build a generative AI marketing solution.
+1. 응답을 검토하여 모델이 프롬프트된 쿼리와 관련된 응집력 있는 자연어 답변을 생성했음을 확인합니다.
+1. 사용자 쿼리 `What skills do I need if I want to develop a solution to accomplish this?`를 입력합니다.
+1. 응답을 검토하여 채팅 세션이 대화 컨텍스트를 보존했음을 확인합니다(따라서 "this"는 마케팅을 위한 생성형 AI 솔루션으로 해석됨). 이러한 컨텍스트화는 각 연속 프롬프트 제출에 최근 대화 기록을 포함함으로써 달성됩니다. 따라서 두 번째 쿼리에 대한 모델로 전송된 프롬프트에는 원래 쿼리와 응답은 물론 새 사용자 입력도 포함되었습니다.
+1. **채팅 세션** 패널 도구 모음에서 **채팅 지우기**를 선택하고 채팅 세션을 다시 시작할 것인지 확인합니다.
+1. 쿼리 `Can you help me find resources to learn those skills?`를 입력하고 응답을 검토합니다. 이는 유효한 자연어 답변이어야 하지만, 이전 채팅 기록이 손실되었기 때문에 생성형 AI 마케팅 솔루션을 빌드하는 데 필요한 특정 기술과 관련된 것이 아니라 일반적인 기술 리소스를 찾는 것이 답변일 가능성이 높습니다.
 
-## Experiment with system messages, prompts, and few-shot examples
+## 시스템 메시지, 프롬프트 및 퓨샷 예 실험
 
-So far, you've engaged in a chat conversation with your model based on the default system message. You can customize the system setup to have more control over the kinds of responses generated by your model.
+지금까지 기본 시스템 메시지를 기반으로 모델과 채팅 대화에 참여했습니다. 모델에서 생성된 응답 종류를 더 효과적으로 제어할 수 있도록 시스템 설정을 사용자 지정할 수 있습니다.
 
-1. In the **Setup** panel, under **Use a system message template**, select the **Marketing Writing Assistant** template and confirm that you want to update the system message.
-1. Review the new system message, which describes how an AI agent should use the model to respond.
-1. In the **Chat session** panel, enter the user query `Create an advertisement for a new scrubbing brush`.
-1. Review the response, which should include advertising copy for a scrubbing brush. The copy may be quite extensive and creative.
+1. **설정** 패널의 **시스템 메시지 템플릿 사용**에서 **마케팅 문서 작성 도우미** 템플릿을 선택하고 시스템 메시지 업데이트를 확인합니다.
+1. AI 에이전트가 모델을 사용하여 응답하는 방법을 설명하는 새로운 시스템 메시지를 검토합니다.
+1. **채팅 세션** 패널에 사용자 쿼리 `Create an advertisement for a new scrubbing brush`를 입력합니다.
+1. 수세미에 대한 광고 문구를 포함해야 하는 응답을 검토합니다. 이 문구는 상당히 광범위하고 창의적일 수 있습니다.
 
-    In a real scenario, a marketing professional would likely already know the name of the scrubbing brush product as well as have some ideas about key features that should be highlighted in an advert. To get the most useful results from a generative AI model, users need to design their prompts to include as much pertinent information as possible.
+    실제 시나리오에서 마케팅 전문가는 이미 수세미 제품의 이름을 알고 있을 뿐만 아니라 광고에서 강조 표시해야 할 주요 기능에 대한 몇 가지 아이디어도 갖고 있을 것입니다. 생성형 AI 모델에서 가장 유용한 결과를 가져오려면 사용자는 관련 정보를 최대한 많이 포함하도록 프롬프트를 설계해야 합니다.
 
-1. Enter the prompt `Revise the advertisement for a scrubbing brush named "Scrubadub 2000", which is made of carbon fiber and reduces cleaning times by half compared to ordinary scrubbing brushes`.
-1. Review the response, which should take into account the additional information you provided about the scrubbing brush product.
+1. 프롬프트 `Revise the advertisement for a scrubbing brush named "Scrubadub 2000", which is made of carbon fiber and reduces cleaning times by half compared to ordinary scrubbing brushes`를 입력합니다.
+1. 수세미 제품에 대해 제공한 추가 정보를 고려해야 하는 응답을 검토합니다.
 
-    The response should now be more useful, but to have even more control over the output from the model, you can provide one or more *few-shot* examples on which responses should be based.
+    이제 응답이 더욱 유용해졌지만 모델의 출력을 더욱 효과적으로 제어하려면 응답의 기반이 되는 하나 이상의 *퓨샷* 예를 제공할 수 있습니다.
 
-1. In the **Setup** panel, under **Examples**, select **Add**. Then type the following message and response in the designated boxes:
+1. **설정** 패널의 **예**에서 **추가**를 선택합니다. 그런 다음 지정된 상자에 다음 메시지와 응답을 입력합니다.
 
-    **User**:
+    **사용자**:
     
     ```
     Write an advertisement for the lightweight "Ultramop" mop, which uses patented absorbent materials to clean floors.
     ```
     
-    **Assistant**:
+    **도우미:**
     
     ```
     Welcome to the future of cleaning!
@@ -118,53 +118,53 @@ So far, you've engaged in a chat conversation with your model based on the defau
     Check out this and other products on our website at www.contoso.com.
     ```
 
-1. Use the **Apply changes** button to save the examples and start a new session.
-1. In the **Chat session** section, enter the user query `Create an advertisement for the Scrubadub 2000 - a new scrubbing brush made of carbon fiber that reduces cleaning time by half`.
-1. Review the response, which should be a new advert for the "Scrubadub 2000" that is modeled on the "Ultramop" example provided in the system setup.
+1. 예를 저장하고 새 세션을 시작하려면 **변경 내용 적용** 단추를 사용합니다.
+1. **채팅 세션** 섹션에 사용자 쿼리 `Create an advertisement for the Scrubadub 2000 - a new scrubbing brush made of carbon fiber that reduces cleaning time by half`를 입력합니다.
+1. 시스템 설정에 제공된 "Ultramop" 예를 모델로 한 "Scrubadub 2000"에 대한 새 광고여야 하는 응답을 검토합니다.
 
-## Experiment with parameters
+## 매개 변수 실험
 
-You've explored how the system message, examples, and prompts can help refine the responses returned by the model. You can also use parameters to control model behavior.
+시스템 메시지, 예 및 프롬프트가 모델에서 반환된 응답을 구체화하는 데 어떻게 도움이 될 수 있는지 살펴보았습니다. 매개 변수를 사용하여 모델 동작을 제어할 수도 있습니다.
 
-1. In the **Configuration** panel, select the **Parameters** tab and set the following parameter values:
-    - **Max response**: 1000
+1. **구성** 패널에서 **매개 변수** 탭을 선택하고 다음 매개 변수 값을 설정합니다.
+    - **최대 응답**: 1000
     - **Temperature**: 1
 
-1. In the **Chat session** section, use the **Clear chat** button to reset the chat session. Then enter the user query `Create an advertisement for a cleaning sponge` and review the response. The resulting advertisement copy should include a maximum of 1000 text tokens, and include some creative elements - for example, the model may have invented a product name for the sponge and made some claims about its features.
-1. Use the **Clear chat** button to reset the chat session again, and then re-enter the same query as before (`Create an advertisement for a cleaning sponge`) and review the response. The response may be different from the previous response.
-1. In the **Configuration** panel, on the **Parameters** tab, change the **Temperature** parameter value to 0.
-1. In the **Chat session** section, use the **Clear chat** button to reset the chat session again, and then re-enter the same query as before (`Create an advertisement for a cleaning sponge`) and review the response. This time, the response may not be quite so creative.
-1. Use the **Clear chat** button to reset the chat session one more time, and then re-enter the same query as before (`Create an advertisement for a cleaning sponge`) and review the response; which should be very similar (if not identical) to the previous response.
+1. **채팅 세션** 섹션에서 **채팅 지우기** 단추를 사용하여 채팅 세션을 다시 설정합니다. 그런 다음 사용자 쿼리 `Create an advertisement for a cleaning sponge`를 입력하고 응답을 검토합니다. 결과적으로 광고 문구에는 최대 1000개의 텍스트 토큰이 포함되어야 하며 일부 창의적인 요소가 포함되어야 합니다. 예를 들어, 모델이 스펀지의 제품 이름을 고안하고 스펀지의 기능에 대해 몇 가지 클레임을 했을 수 있습니다.
+1. **채팅 지우기** 단추를 사용하여 채팅 세션을 다시 설정한 다음 이전과 동일한 쿼리(`Create an advertisement for a cleaning sponge`)를 다시 입력하고 응답을 검토합니다. 응답은 이전 답변과 다를 수 있습니다.
+1. **구성** 패널의 **매개 변수** 탭에서 **온도** 매개 변수 값을 0으로 변경합니다.
+1. **채팅 세션** 섹션에서 **채팅 지우기** 단추를 사용하여 채팅 세션을 다시 설정한 다음 이전과 동일한 쿼리(`Create an advertisement for a cleaning sponge`)를 다시 입력하고 응답을 검토합니다. 이번에는 응답이 그리 창의적이지 않을 수도 있습니다.
+1. **채팅 지우기** 단추를 사용하여 채팅 세션을 한 번 더 다시 설정한 다음 이전과 동일한 쿼리(`Create an advertisement for a cleaning sponge`)를 다시 입력하고 응답을 검토합니다. 이는 이전 응답과 매우 유사해야 합니다(동일하지는 않음).
 
-    The **Temperature** parameter controls the degree to which the model can be creative in its generation of a response. A low value results in a consistent response with little random variation, while a high value encourages the model to add creative elements its output; which may affect the accuracy and realism of the response.
+    **온도** 매개 변수는 모델이 응답을 만들 때 창의성을 발휘할 수 있는 정도를 제어합니다. 값이 낮으면 임의 변화가 거의 없는 일관된 응답이 발생하고, 값이 높으면 모델이 출력에 창의적인 요소를 추가하도록 권장됩니다. 이는 응답의 정확도와 현실성에 영향을 미칠 수 있습니다.
 
-## Deploy your model to a web app
+## 웹앱에 모델 배포
 
-Now that you've explored some of the capabilities of a generative AI model in the Azure OpenAI Studio playground, you can deploy an Azure web app to provide a basic AI agent interface through which users can chat with the model.
+Azure OpenAI Studio 플레이그라운드에서 생성형 AI 모델의 기능 중 일부를 살펴보았으므로 이제 Azure 웹앱을 배포하여 사용자가 모델과 채팅할 수 있는 기본 AI 에이전트 인터페이스를 제공할 수 있습니다.
 
-1. At the top right of the **Chat** playground page, in the **Deploy to** menu, select **A new web app**.
-1. In the **Deploy to a web app** dialog box, create a new web app with the following settings:
-    - **Name**: *A unique name*
-    - **Subscription**: *Your Azure subscription*
-    - **Resource group**: *The resource group in which you provisioned your Azure OpenAI resource*
-    - **Locations**: *The region where you provisioned your Azure OpenAI resource*
-    - **Pricing plan**: Free (F1) - *If this is not available, select Basic (B1)*
-    - **Enable chat history in the web app**: <u>Un</u>selected
-    - **I acknowledge that web apps will incur usage to my account**: Selected
-1. Deploy the new web app and wait for deployment to complete (which may take 10 minutes or so)
-1. After your web app has deployed successfully, use the button at the top right of the **Chat** playground page to launch the web app. The app may take a few minutes to launch. If prompted, accept the permissions request.
-1. In the web app, enter the following chat message:
+1. **채팅** 플레이그라운드 페이지 오른쪽 상단의 **배포 대상** 메뉴에서 **새 웹앱**을 선택합니다.
+1. **웹앱에 배포** 대화 상자에서 다음 설정을 사용하여 새 웹앱을 만듭니다.
+    - **이름**: ‘고유 이름’**
+    - **구독**: ‘Azure 구독’
+    - **리소스 그룹**: *Azure OpenAI 리소스를 프로비전한 리소스 그룹*
+    - **위치**: *Azure OpenAI 리소스를 프로비전한 지역*
+    - **요금제**: 무료(F1) - *이 기능을 사용할 수 없는 경우 기본(B1) 선택*
+    - **웹앱에서 채팅 기록을 사용하도록 설정합니다**: 선택 <u>안 함</u>
+    - **웹앱에서 내 계정에 사용량이 발생한다는 것을 인정합니다**. 선택됨
+1. 새 웹앱을 배포하고 배포가 완료될 때까지 기다립니다(10분 정도 소요될 수 있음).
+1. 웹앱이 성공적으로 배포되면 **채팅** 플레이그라운드 페이지 오른쪽 상단에 있는 단추를 사용하여 웹앱을 시작합니다. 앱이 시작되는 데 몇 분 정도 걸릴 수 있습니다. 메시지가 표시되면 권한 요청을 수락합니다.
+1. 웹앱에서 다음 채팅 메시지를 입력합니다.
 
     ```
     Write an advertisement for the new "WonderWipe" cloth that attracts dust particulates and can be used to clean any household surface.
     ```
 
-1. Review the response.
+1. 응답을 검토합니다.
 
-    > **Note**: You deployed the *model* to a web app, but this deployment doesn't include the system settings and parameters you set in the playground; so the response may not reflect the examples you specified in the playground. In a real scenario, you would add logic to your application to modify the prompt so that it includes the appropriate contextual data for the kinds of response you want to generate. This kind of customization is beyond the scope of this introductory-level exercise, but you can learn about prompt engineering techniques and Azure OpenAI APIs in other exercises and product documentation.
+    > **참고**: *모델*을 웹앱에 배포했지만 이 배포에는 플레이그라운드에서 설정한 시스템 설정 및 매개 변수가 포함되지 않습니다. 따라서 응답은 플레이그라운드에서 지정한 예를 반영하지 않을 수 있습니다. 실제 시나리오에서는 생성하려는 응답 종류에 대한 적절한 상황별 데이터가 포함되도록 프롬프트를 수정하는 논리를 애플리케이션에 추가합니다. 이러한 종류의 사용자 지정은 이 입문 수준 연습의 범위를 벗어나지만 다른 연습 및 제품 설명서에서 프롬프트 엔지니어링 기술과 Azure OpenAI API에 대해 알아볼 수 있습니다.
 
-1. When you have finished experimenting with your model in the web app, close the web app tab in your browser to return to Azure OpenAI Studio.
+1. 웹앱에서 모델 실험을 마쳤으면 브라우저에서 웹앱 탭을 닫고 Azure OpenAI Studio로 돌아갑니다.
 
-## Clean up
+## 정리
 
-When you're done with your Azure OpenAI resource, remember to delete the deployment or the entire resource in the **Azure portal** at `https://portal.azure.com`.
+Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 배포 또는 전체 리소스를 삭제해야 합니다.

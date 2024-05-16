@@ -1,70 +1,70 @@
 ---
 lab:
-    title: 'Implement Retrieval Augmented Generation (RAG) with Azure OpenAI Service'
+  title: Azure OpenAI Service를 사용하여 RAG(검색 증강 생성) 구현
 ---
 
-# Implement Retrieval Augmented Generation (RAG) with Azure OpenAI Service
+# Azure OpenAI Service를 사용하여 RAG(검색 증강 생성) 구현
 
-The Azure OpenAI Service enables you to use your own data with the intelligence of the underlying LLM. You can limit the model to only use your data for pertinent topics, or blend it with results from the pre-trained model.
+Azure OpenAI Service를 사용하면 기본 LLM의 인텔리전스와 함께 자체 데이터를 사용할 수 있습니다. 관련 항목에 대한 데이터만 사용하도록 모델을 제한하거나 미리 학습된 모델의 결과와 혼합할 수 있습니다.
 
-In the scenario for this exercise, you will perform the role of a software developer working for Margie's Travel Agency. You will explore how to use generative AI to make coding tasks easier and more efficient. The techniques used in the exercise can be applied to other code files, programming languages, and use cases.
+이 연습 시나리오에서 Margie's Travel Agency에서 근무하는 소프트웨어 개발자의 역할을 수행하게 됩니다. 생성형 AI를 사용하여 코딩 작업을 보다 쉽고 효율적으로 만드는 방법을 살펴보겠습니다. 연습에 사용된 기술은 다른 코드 파일, 프로그래밍 언어 및 사용 사례에 적용될 수 있습니다.
 
-This exercise will take approximately **20** minutes.
+이 연습은 약 **20**분 정도 소요됩니다.
 
-## Provision an Azure OpenAI resource
+## Azure OpenAI 리소스 프로비전
 
-If you don't already have one, provision an Azure OpenAI resource in your Azure subscription.
+아직 없는 경우 Azure 구독에서 Azure OpenAI 리소스를 프로비전합니다.
 
-1. Sign into the **Azure portal** at `https://portal.azure.com`.
-2. Create an **Azure OpenAI** resource with the following settings:
-    - **Subscription**: *Select an Azure subscription that has been approved for access to the Azure OpenAI service*
-    - **Resource group**: *Choose or create a resource group*
-    - **Region**: *Make a **random** choice from any of the following regions*\*
-        - Australia East
-        - Canada East
-        - East US
-        - East US 2
-        - France Central
-        - Japan East
-        - North Central US
-        - Sweden Central
-        - Switzerland North
-        - UK South
-    - **Name**: *A unique name of your choice*
-    - **Pricing tier**: Standard S0
+1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
+2. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
+    - **구독**: *Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
+    - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
+    - **지역**: *다음 지역 중 하나를 **임의로** 선택합니다.*\*
+        - 오스트레일리아 동부
+        - 캐나다 동부
+        - 미국 동부
+        - 미국 동부 2
+        - 프랑스 중부
+        - 일본 동부
+        - 미국 중북부
+        - 스웨덴 중부
+        - 스위스 북부
+        - 영국 남부
+    - **이름**: ‘원하는 고유한 이름’**
+    - **가격 책정 계층**: 표준 S0
 
-    > \* Azure OpenAI resources are constrained by regional quotas. The listed regions include default quota for the model type(s) used in this exercise. Randomly choosing a region reduces the risk of a single region reaching its quota limit in scenarios where you are sharing a subscription with other users. In the event of a quota limit being reached later in the exercise, there's a possibility you may need to create another resource in a different region.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 나열된 지역에는 이 연습에 사용된 모델 형식에 대한 기본 할당량이 포함되어 있습니다. 지역을 임의로 선택하면 다른 사용자와 구독을 공유하는 시나리오에서 단일 지역이 할당량 한도에 도달할 위험이 줄어듭니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-3. Wait for deployment to complete. Then go to the deployed Azure OpenAI resource in the Azure portal.
+3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
 
-## Deploy a model
+## 모델 배포
 
-Azure OpenAI provides a web-based portal named **Azure OpenAI Studio**, that you can use to deploy, manage, and explore models. You'll start your exploration of Azure OpenAI by using Azure OpenAI Studio to deploy a model.
+Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Azure OpenAI Studio**라는 웹 기반 포털을 제공합니다. Azure OpenAI Studio를 사용하여 모델을 배포함으로써 Azure OpenAI 탐색을 시작합니다.
 
-1. On the **Overview** page for your Azure OpenAI resource, use the **Go to Azure OpenAI Studio** button to open Azure OpenAI Studio in a new browser tab.
-2. In Azure OpenAI Studio, on the **Deployments** page, view your existing model deployments. If you don't already have one, create a new deployment of the **gpt-35-turbo-16k** model with the following settings:
-    - **Model**: gpt-35-turbo-16k *(must be this model to use the features in this exercise)*
-    - **Model version**: Auto-update to default
-    - **Deployment name**: *A unique name of your choice. You'll use this name later in the lab.*
-    - **Advanced options**
-        - **Content filter**: Default
-        - **Deployment type**: Standard
-        - **Tokens per minute rate limit**: 5K\*
-        - **Enable dynamic quota**: Enabled
+1. Azure OpenAI 리소스의 **개요** 페이지에서 **Azure OpenAI Studio로 이동** 단추를 사용하여 새 브라우저 탭에서 Azure OpenAI Studio를 엽니다.
+2. Azure OpenAI Studio의 **배포** 페이지에서 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+    - **모델**: gpt-35-turbo-16k *(이 연습의 기능을 사용하려면 이 모델이어야 함)*
+    - **모델 버전**: 기본값으로 자동 업데이트
+    - **배포 이름**: *원하는 고유한 이름. 나중에 랩에서 이 이름을 사용하게 됩니다.*
+    - **고급 옵션**
+        - **콘텐츠 필터**: 기본값
+        - **배포 유형**: 표준
+        - **분당 토큰 속도 제한**: 5K\*
+        - **동적 할당량 사용**: 사용
 
-    > \* A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+    > \* 분당 5,000개 토큰의 속도를 제한하더라도 동일한 구독을 사용하는 다른 사용자에게 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
-## Observe normal chat behavior without adding your own data
+## 고유의 데이터를 추가하지 않고 일반적인 채팅 동작을 확인합니다.
 
-Before connecting Azure OpenAI to your data, let's first observe how the base model responds to queries without any grounding data.
+Azure OpenAI를 데이터에 연결하기 전에 먼저 기본 모델이 기반 데이터 없이 쿼리에 어떻게 응답하는지 확인하겠습니다.
 
-1. In **Azure OpenAI Studio** at `https://oai.azure.com`, in the **Playground** section, select the **Chat** page. The **Chat** playground page consists of three main sections:
-    - **Setup** - used to set the context for the model's responses.
-    - **Chat session** - used to submit chat messages and view responses.
-    - **Configuration** - used to configure settings for the model deployment.
-2. In the **Configuration** section, ensure that your model deployment is selected.
-3. In the **Setup** area, select the default system message template to set the context for the chat session. The default system message is *You are an AI assistant that helps people find information*.
-4. In the **Chat session**, submit the following queries, and review the responses:
+1. **Azure OpenAI Studio**(`https://oai.azure.com`)의 **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 세 가지 주요 섹션으로 구성됩니다.
+    - **설정** - 모델의 응답에 대한 컨텍스트를 설정하는 데 사용됩니다.
+    - **채팅 세션** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
+    - **구성** - 모델 배포에 대한 설정을 구성하는 데 사용됩니다.
+2. **구성** 섹션에서 모델 배포가 선택되어 있는지 확인합니다.
+3. **설정** 영역에서 기본 시스템 메시지 템플릿을 선택하여 채팅 세션의 컨텍스트를 설정합니다. 기본 시스템 메시지는 *사용자가 정보를 찾는 데 도움이 되는 AI 도우미*입니다.
+4. **채팅 세션**에서 다음 쿼리를 제출하고 응답을 검토합니다.
 
     ```
     I'd like to take a trip to New York. Where should I stay?
@@ -74,52 +74,52 @@ Before connecting Azure OpenAI to your data, let's first observe how the base mo
     What are some facts about New York?
     ```
 
-    Try similar questions about tourism and places to stay for other locations that will be included in our grounding data, such as London, or San Francisco. You'll likely get complete responses about areas or neighborhoods, and some general facts about the city.
+    런던이나 샌프란시스코 등 기반 데이터에 포함될 다른 위치의 관광 및 숙박 장소에 대해 유사한 질문을 시도해 보세요. 지역이나 인근 지역에 대한 완전한 답변과 도시에 대한 몇 가지 일반적인 팩트를 가져올 수 있습니다.
 
-## Connect your data in the chat playground
+## 채팅 플레이그라운드에서 데이터 연결
 
-Now you'll add some data for a fictional travel agent company named *Margie's Travel*. Then you'll see how the Azure OpenAI model responds when using the brochures from Margie's Travel as grounding data.
+이제 *Margie's Travel*이라는 가상의 여행사 회사에 대한 일부 데이터를 추가할 예정입니다. 그런 다음 Margie's Travel의 브로셔를 기초 데이터로 사용할 때 Azure OpenAI 모델이 어떻게 반응하는지 살펴보겠습니다.
 
-1. In a new browser tab, download an archive of brochure data from `https://aka.ms/own-data-brochures`. Extract the brochures to a folder on your PC.
-1. In Azure OpenAI Studio, in the **Chat** playground, in the **Setup** section, select **Add your data**.
-1. Select **Add a data source** and choose **Upload files**.
-1. You'll need to create a storage account and Azure AI Search resource. Under the dropdown for the storage resource, select **Create a new Azure Blob storage resource**, and create a storage account with the following settings. Anything not specified leave as the default.
+1. 새 브라우저 탭에서 `https://aka.ms/own-data-brochures`의 브로셔 데이터 보관을 다운로드합니다. PC의 폴더에 브로셔를 추출합니다.
+1. Azure OpenAI Studio의 **채팅** 플레이그라운드에 있는 **설정** 섹션에서 **데이터 추가**를 선택합니다.
+1. **데이터 원본 추가**를 선택하고 **파일 업로드**를 선택합니다.
+1. 스토리지 계정과 Azure AI 검색 리소스를 만들어야 합니다. 스토리지 리소스 드롭다운에서 **새 Azure Blob Storage 리소스 만들기**를 선택하고 다음 설정으로 스토리지 계정을 만듭니다. 지정하지 않은 항목은 기본값으로 그대로 둡니다.
 
-    - **Subscription**: *Your Azure subscription*
-    - **Resource group**: *Select the same resource group as your Azure OpenAI resource*
-    - **Storage account name**: *Enter a unique name*
-    - **Region**: *Select the same region as your Azure OpenAI resource*
-    - **Redundancy**: Locally-redundant storage (LRS)
+    - **구독**: ‘Azure 구독’
+    - **리소스 그룹**: *Azure OpenAI 리소스와 동일한 리소스 그룹을 선택합니다.*
+    - **스토리지 계정 이름**: 고유한 이름 입력**
+    - **지역**: *Azure OpenAI 리소스와 동일한 지역 선택*
+    - **중복도**: LRS(로컬 중복 스토리지)
 
-1. While the storage account resource is being created, return to Azure OpenAI Studio and select **Create a new Azure AI Search resource** with the following settings. Anything not specified leave as the default.
+1. 스토리지 계정 리소스가 만들어지는 동안 Azure OpenAI Studio로 돌아가서 다음 설정을 사용하여 **새 Azure AI 검색 리소스 만들기**를 선택합니다. 지정하지 않은 항목은 기본값으로 그대로 둡니다.
 
-    - **Subscription**: *Your Azure subscription*
-    - **Resource group**: *Select the same resource group as your Azure OpenAI resource*
-    - **Service name**: *Enter a unique name*
-    - **Location**: *Select the same location as your Azure OpenAI resource*
-    - **Pricing tier**: Basic
+    - **구독**: ‘Azure 구독’
+    - **리소스 그룹**: *Azure OpenAI 리소스와 동일한 리소스 그룹을 선택합니다.*
+    - **서비스 이름**: 고유한 이름 입력**
+    - **위치**: *Azure OpenAI 리소스와 동일한 위치 선택*
+    - **가격 책정 계층**: 기본
 
-1. Wait until your search resource has been deployed, then switch back to the Azure AI Studio.
-1. In the **Add data**, enter the following values for your data source, then select **Next**.
+1. 검색 리소스가 배포될 때까지 기다린 다음, Azure AI 스튜디오로 다시 전환합니다.
+1. **데이터 추가**에서 데이터 원본에 대해 다음 값을 입력하고 **다음**을 선택합니다.
 
-    - **Select data source**: Upload files
-    - **Subscription**: Your Azure subscription
-    - **Select Azure Blob storage resource**: *Use the **Refresh** button to repopulate the list, and then choose the storage resource you created*
-        - Turn on CORS when prompted
-    - **Select Azure AI Search resource**: *Use the **Refresh** button to repopulate the list, and then choose the search resource you created*
-    - **Enter the index name**: `margiestravel`
-    - **Add vector search to this search resource**: unchecked
-    - **I acknowledge that connecting to an Azure AI Search account will incur usage to my account** : checked
+    - **데이터 원본 선택**: 파일 업로드
+    - **구독**: ‘Azure 구독’
+    - **Azure Blob Storage 리소스 선택**: ***새로 고침** 단추를 사용하여 목록을 다시 채운 다음 만든 저장 리소스 선택*
+        - 메시지가 표시되면 CORS를 켭니다.
+    - **Azure AI 검색 리소스 선택**: ***새로 고침** 단추를 사용하여 목록을 다시 채운 다음 만든 검색 리소스 선택*
+    - **인덱스 이름 입력**: `margiestravel`
+    - **이 검색 리소스에 벡터 검색 추가**: 선택 취소됨
+    - **Azure AI 검색 계정에 연결하면 내 계정이 사용된다는 점을 인정합니다.**: 선택됨
 
-1. On the **Upload files** page, upload the PDFs you downloaded, and then select **Next**.
-1. On the **Data management** page select the **Keyword** search type from the drop-down, and then select **Next**.
-1. On the **Review and finish** page select **Save and close**, which will add your data. This may take a few minutes, during which you need to leave your window open. Once complete, you'll see the data source, search resource, and index specified in the **Setup** section.
+1. **파일 업로드** 페이지에서 다운로드한 PDF를 업로드하고 **다음**을 선택합니다.
+1. **데이터 관리** 페이지의 드롭다운 메뉴에서 **키워드** 검색 유형을 선택한 후 **다음**을 선택합니다.
+1. **검토 및 완료** 페이지에서 **저장 후 닫기**를 선택하면 데이터가 추가됩니다. 이 작업은 몇 분 정도 걸릴 수 있으므로 창을 열어 두어야 합니다. 완료되면 **설정** 섹션에 지정된 데이터 원본, 검색 리소스 및 인덱스가 표시됩니다.
 
-    > **Tip**: Occasionally the connection between your new search index and Azure OpenAI Studio takes too long. If you've waited for a few minutes and it still hasn't connected, check your AI Search resources in Azure portal. If you see the completed index, you can disconnect the data connection in Azure OpenAI Studio and re-add it by specifying an Azure AI Search data source and selecting your new index.
+    > **팁**: 경우에 따라 새 검색 인덱스와 Azure OpenAI Studio 간의 연결이 너무 오래 걸립니다. 몇 분 동안 기다렸지만 여전히 연결되지 않은 경우 Azure Portal에서 AI 검색 리소스를 확인합니다. 완료된 인덱스가 표시되면 Azure OpenAI Studio에서 데이터 연결을 끊고 Azure AI 검색 데이터 원본을 지정하고 새 인덱스를 선택하여 다시 추가할 수 있습니다.
 
-## Chat with a model grounded in your data
+## 데이터를 기반으로 한 모델과 채팅
 
-Now that you've added your data, ask the same questions as you did previously, and see how the response differs.
+이제 데이터를 추가했으므로 이전과 동일한 질문을 하고 응답이 어떻게 다른지 확인합니다.
 
 ```
 I'd like to take a trip to New York. Where should I stay?
@@ -129,40 +129,40 @@ I'd like to take a trip to New York. Where should I stay?
 What are some facts about New York?
 ```
 
-You'll notice a very different response this time, with specifics about certain hotels and a mention of Margie's Travel, as well as references to where the information provided came from. If you open the PDF reference listed in the response, you'll see the same hotels as the model provided.
+이번에는 특정 호텔에 대한 구체적인 내용, Margie's Travel에 대한 언급, 제공된 정보의 출처에 대한 언급 등 매우 다른 반응을 보게 될 것입니다. 응답에 나열된 PDF 참조를 열면 제공된 모델과 동일한 호텔이 표시됩니다.
 
-Try asking it about other cities included in the grounding data, which are Dubai, Las Vegas, London, and San Francisco.
+두바이, 라스베거스, 런던, 샌프란시스코 등 기반 데이터에 포함된 다른 도시에 대해 요청합니다.
 
-> **Note**: **Add your data** is still in preview and might not always behave as expected for this feature, such as giving the incorrect reference for a city not included in the grounding data.
+> **참고**: **데이터 추가**는 아직 미리 보기 상태이며 기반 데이터에 포함되지 않은 도시에 대한 잘못된 참조를 제공하는 것과 같이 이 기능이 항상 예상대로 작동하는 것은 아닙니다.
 
-## Connect your app to your own data
+## 앱을 고유의 데이터에 연결
 
-Next, let's explore how to connect your app to use your own data.
+다음으로 앱을 연결하여 자체 데이터를 사용하는 방법을 살펴보겠습니다.
 
-### Prepare to develop an app in Visual Studio Code
+### Visual Studio Code에서 앱 개발 준비
 
-Now let's explore the use of your own data in an app that uses the Azure OpenAI service SDK. You'll develop your app using Visual Studio Code. The code files for your app have been provided in a GitHub repo.
+이제 Azure OpenAI 서비스 SDK를 사용하는 앱에서 자체 데이터를 사용하는 방법을 살펴보겠습니다. 여기서는 Visual Studio Code를 사용하여 앱을 개발합니다. 앱의 코드 파일은 GitHub 리포지토리에 제공되었습니다.
 
-> **Tip**: If you have already cloned the **mslearn-openai** repo, open it in Visual Studio code. Otherwise, follow these steps to clone it to your development environment.
+> **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
-1. Start Visual Studio Code.
-2. Open the palette (SHIFT+CTRL+P) and run a **Git: Clone** command to clone the `https://github.com/MicrosoftLearning/mslearn-openai` repository to a local folder (it doesn't matter which folder).
-3. When the repository has been cloned, open the folder in Visual Studio Code.
+1. Visual Studio Code 시작
+2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
-    > **Note**: If Visual Studio Code shows you a pop-up message to prompt you to trust the code you are opening, click on **Yes, I trust the authors** option in the pop-up.
+    > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
 
-4. Wait while additional files are installed to support the C# code projects in the repo.
+4. 리포지토리의 C# 코드 프로젝트를 지원하는 추가 파일이 설치되는 동안 기다립니다.
 
-    > **Note**: If you are prompted to add required assets to build and debug, select **Not Now**.
+    > **참고**: 빌드 및 디버깅에 필요한 자산을 추가하라는 메시지가 표시되면 **나중에**를 선택합니다.
 
-## Configure your application
+## 애플리케이션 사용
 
-Applications for both C# and Python have been provided, and both apps feature the same functionality. First, you'll complete some key parts of the application to enable using your Azure OpenAI resource.
+C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 동일한 기능을 제공합니다. 먼저, Azure OpenAI 리소스를 사용할 수 있도록 애플리케이션의 일부 주요 부분을 완료합니다.
 
-1. In Visual Studio Code, in the **Explorer** pane, browse to the **Labfiles/06-use-own-data** folder and expand the **CSharp** or **Python** folder depending on your language preference. Each folder contains the language-specific files for an app into which you're going to integrate Azure OpenAI functionality.
-2. Right-click the **CSharp** or **Python** folder containing your code files and open an integrated terminal. Then install the Azure OpenAI SDK package by running the appropriate command for your language preference:
+1. Visual Studio Code의 **탐색기** 창에서 **Labfiles/06-use-own-data** 폴더를 찾아 언어 선택에 따라 **CSharp** 또는 **Python** 폴더를 확장합니다. 각 폴더에는 Azure OpenAI 기능을 통합할 앱에 대한 언어별 파일이 포함되어 있습니다.
+2. 코드 파일이 포함된 **CSharp** 또는 **Python** 폴더를 마우스 오른쪽 단추로 클릭하고 통합 터미널을 엽니다. 그런 다음, 언어 선택에 적절한 명령을 실행하여 Azure OpenAI SDK 패키지를 설치합니다.
 
-    **C#**:
+    **C#:**
 
     ```
     dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.14
@@ -174,24 +174,24 @@ Applications for both C# and Python have been provided, and both apps feature th
     pip install openai==1.13.3
     ```
 
-3. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the configuration file for your preferred language
+3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
     
-4. Update the configuration values to include:
-    - The  **endpoint** and a **key** from the Azure OpenAI resource you created (available on the **Keys and Endpoint** page for your Azure OpenAI resource in the Azure portal)
-    - The **deployment name** you specified for your model deployment (available in the **Deployments** page in Azure OpenAI Studio).
-    - The endpoint for your search service (the **Url** value on the overview page for your search resource in the Azure portal).
-    - A **key** for your search resource (available in the **Keys** page for your search resource in the Azure portal - you can use either of the admin keys)
-    - The name of the search index (which should be `margiestravel`).
-1. Save the configuration file.
+4. 다음을 포함하도록 구성 값을 업데이트합니다.
+    - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
+    - 모델 배포에 대해 지정한 **배포 이름**(Azure OpenAI Studio의 **배포** 페이지에서 사용 가능)
+    - 검색 서비스의 엔드포인트(Azure Portal의 검색 리소스 개요 페이지에 있는 **Url** 값)
+    - 검색 리소스용 **키**(Azure Portal의 검색 리소스에 대한 **키** 페이지에서 사용 가능 - 관리자 키 중 하나를 사용할 수 있음)
+    - 검색 인덱스의 이름(`margiestravel`이어야 함).
+1. 구성 파일을 저장합니다.
 
-### Add code to use the Azure OpenAI service
+### Azure OpenAI 서비스를 사용하기 위한 코드 추가
 
-Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
+이제 Azure OpenAI SDK를 사용하여 배포된 모델을 사용할 준비가 되었습니다.
 
-1. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the code file for your preferred language, and replace the comment ***Configure your data source*** with code to add the Azure OpenAI SDK library:
+1. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 코드 파일을 열고 ***데이터 원본 구성*** 주석을 Azure OpenAI SDK 라이브러리를 추가하는 코드로 바꿉니다.
 
     **C#**: ownData.cs
 
@@ -221,25 +221,25 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
         )
     ```
 
-2. Review the rest of the code, noting the use of the *extensions* in the request body that is used to provide information about the data source settings.
+2. 나머지 코드를 검토하고 데이터 원본 설정에 대한 정보를 제공하는 데 사용되는 요청 본문의 *확장* 사용에 유의해야 합니다.
 
-3. Save the changes to the code file.
+3. 변경 내용을 코드 파일에 저장합니다.
 
-## Run your application
+## 애플리케이션 실행
 
-Now that your app has been configured, run it to send your request to your model and observe the response. You'll notice the only difference between the different options is the content of the prompt, all other parameters (such as token count and temperature) remain the same for each request.
+이제 앱이 구성되었으므로 앱을 실행하여 모델에 요청을 보내고 응답을 확인합니다. 서로 다른 옵션 간의 유일한 차이점은 프롬프트의 내용이며, 다른 모든 매개 변수(예: 토큰 수 및 온도)는 각 요청에서 동일하게 유지됩니다.
 
-1. In the interactive terminal pane, ensure the folder context is the folder for your preferred language. Then enter the following command to run the application.
+1. 대화형 터미널 창에서 폴더 컨텍스트가 기본 설정 언어의 폴더인지 확인합니다. 그런 후 다음 명령을 입력하여 애플리케이션을 실행합니다.
 
     - **C#**: `dotnet run`
     - **Python**: `python ownData.py`
 
-    > **Tip**: You can use the **Maximize panel size** (**^**) icon in the terminal toolbar to see more of the console text.
+    > **팁**: 터미널 도구 모음의 **패널 크기 최대화**(**^**) 아이콘을 사용하면 더 많은 콘솔 텍스트를 볼 수 있습니다.
 
-2. Review the response to the prompt `Tell me about London`, which should include an answer as well as some details of the data used to ground the prompt, which was obtained from your search service.
+2. 프롬프트 `Tell me about London`에 대한 응답을 검토합니다. 여기에는 검색 서비스에서 가져오는 프롬프트를 기반으로 하는 데 사용된 데이터의 일부 세부 정보와 답변이 포함되어야 합니다.
 
-    > **Tip**: If you want to see the citations from your search index, set the variable ***show citations*** near the top of the code file to **true**.
+    > **팁**: 검색 인덱스에서 인용을 보려면 코드 파일 상단 근처의 ***인용 표시*** 변수를 **true**로 설정합니다.
 
-## Clean up
+## 정리
 
-When you're done with your Azure OpenAI resource, remember to delete the resource in the **Azure portal** at `https://portal.azure.com`. Be sure to also include the storage account and search resource, as those can incur a relatively large cost.
+Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 리소스를 삭제해야 합니다. 상대적으로 큰 비용이 발생할 수 있으므로 스토리지 계정 및 검색 리소스도 포함해야 합니다.
