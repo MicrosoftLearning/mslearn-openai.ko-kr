@@ -1,70 +1,70 @@
 ---
 lab:
-    title: 'Utilize prompt engineering in your app'
+  title: 앱에서 프롬프트 엔지니어링 활용
 ---
 
-# Utilize prompt engineering in your app
+# 앱에서 프롬프트 엔지니어링 활용
 
-When working with the Azure OpenAI Service, how developers shape their prompt greatly impacts how the generative AI model will respond. Azure OpenAI models are able to tailor and format content, if requested in a clear and concise way. In this exercise, you'll learn how different prompts for similar content help shape the AI model's response to better satisfy your requirements.
+Azure OpenAI Service를 사용하는 경우 개발자가 프롬프트를 형성하는 방식은 생성 AI 모델이 응답하는 방식에 큰 영향을 줍니다. 명확하고 간결한 방식으로 요청하면 Azure OpenAI 모델은 콘텐츠를 조정하고 서식을 지정할 수 있습니다. 이 연습에서는 유사한 콘텐츠에 대한 다양한 프롬프트가 요구 사항을 더 잘 충족하도록 AI 모델의 응답을 형성하는 데 어떻게 도움이 되는지 알아봅니다.
 
-In scenario for this exercise, you will perform the role of a software developer working on a wildlife marketing campaign. You are exploring how to use generative AI to improve advertising emails and categorize articles that might apply to your team. The prompt engineering techniques used in the exercise can be applied similarly for a variety of use cases.
+이 연습 시나리오에서는 야생동물 마케팅 캠페인을 진행하는 소프트웨어 개발자의 역할을 수행하게 됩니다. 사생성형 AI를 사용하여 보급 이메일을 개선하고 팀에 적용할 수 있는 문서를 분류하는 방법을 탐색하고 있습니다. 연습에 사용된 프롬프트 엔지니어링 기술은 다양한 사용 사례에 유사하게 적용될 수 있습니다.
 
-This exercise will take approximately **30** minutes.
+이 연습은 약 **30**분 정도 소요됩니다.
 
-## Provision an Azure OpenAI resource
+## Azure OpenAI 리소스 프로비전
 
-If you don't already have one, provision an Azure OpenAI resource in your Azure subscription.
+아직 없는 경우 Azure 구독에서 Azure OpenAI 리소스를 프로비전합니다.
 
-1. Sign into the **Azure portal** at `https://portal.azure.com`.
-2. Create an **Azure OpenAI** resource with the following settings:
-    - **Subscription**: *Select an Azure subscription that has been approved for access to the Azure OpenAI service*
-    - **Resource group**: *Choose or create a resource group*
-    - **Region**: *Make a **random** choice from any of the following regions*\*
-        - Australia East
-        - Canada East
-        - East US
-        - East US 2
-        - France Central
-        - Japan East
-        - North Central US
-        - Sweden Central
-        - Switzerland North
-        - UK South
-    - **Name**: *A unique name of your choice*
-    - **Pricing tier**: Standard S0
+1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
+2. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
+    - **구독**: *Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
+    - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
+    - **지역**: *다음 지역 중 하나를 **임의로** 선택합니다.*\*
+        - 오스트레일리아 동부
+        - 캐나다 동부
+        - 미국 동부
+        - 미국 동부 2
+        - 프랑스 중부
+        - 일본 동부
+        - 미국 중북부
+        - 스웨덴 중부
+        - 스위스 북부
+        - 영국 남부
+    - **이름**: ‘원하는 고유한 이름’**
+    - **가격 책정 계층**: 표준 S0
 
-    > \* Azure OpenAI resources are constrained by regional quotas. The listed regions include default quota for the model type(s) used in this exercise. Randomly choosing a region reduces the risk of a single region reaching its quota limit in scenarios where you are sharing a subscription with other users. In the event of a quota limit being reached later in the exercise, there's a possibility you may need to create another resource in a different region.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 나열된 지역에는 이 연습에 사용된 모델 형식에 대한 기본 할당량이 포함되어 있습니다. 지역을 임의로 선택하면 다른 사용자와 구독을 공유하는 시나리오에서 단일 지역이 할당량 한도에 도달할 위험이 줄어듭니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-3. Wait for deployment to complete. Then go to the deployed Azure OpenAI resource in the Azure portal.
+3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
 
-## Deploy a model
+## 모델 배포
 
-Azure OpenAI provides a web-based portal named **Azure OpenAI Studio**, that you can use to deploy, manage, and explore models. You'll start your exploration of Azure OpenAI by using Azure OpenAI Studio to deploy a model.
+Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Azure OpenAI Studio**라는 웹 기반 포털을 제공합니다. Azure OpenAI Studio를 사용하여 모델을 배포함으로써 Azure OpenAI 탐색을 시작합니다.
 
-1. On the **Overview** page for your Azure OpenAI resource, use the **Go to Azure OpenAI Studio** button to open Azure OpenAI Studio in a new browser tab.
-2. In Azure OpenAI Studio, on the **Deployments** page, view your existing model deployments. If you don't already have one, create a new deployment of the **gpt-35-turbo-16k** model with the following settings:
-    - **Model**: gpt-35-turbo-16k *(if the 16k model isn't available, choose gpt-35-turbo)*
-    - **Model version**: Auto-update to default
-    - **Deployment name**: *A unique name of your choice. You'll use this name later in the lab.*
-    - **Advanced options**
-        - **Content filter**: Default
-        - **Deployment type**: Standard
-        - **Tokens per minute rate limit**: 5K\*
-        - **Enable dynamic quota**: Enabled
+1. Azure OpenAI 리소스의 **개요** 페이지에서 **Azure OpenAI Studio로 이동** 단추를 사용하여 새 브라우저 탭에서 Azure OpenAI Studio를 엽니다.
+2. Azure OpenAI Studio의 **배포** 페이지에서 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+    - **모델**: gpt-35-turbo-16k *(16k 모델을 사용할 수 없는 경우 gpt-35-turbo 선택)*
+    - **모델 버전**: 기본값으로 자동 업데이트
+    - **배포 이름**: *원하는 고유한 이름. 나중에 랩에서 이 이름을 사용하게 됩니다.*
+    - **고급 옵션**
+        - **콘텐츠 필터**: 기본값
+        - **배포 유형**: 표준
+        - **분당 토큰 속도 제한**: 5K\*
+        - **동적 할당량 사용**: 사용
 
-    > \* A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+    > \* 분당 5,000개 토큰의 속도를 제한하더라도 동일한 구독을 사용하는 다른 사용자에게 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
-## Explore prompt engineering techniques
+## 프롬프트 엔지니어링 기술 살펴보기
 
-Let's start by exploring some prompt engineering techniques in the Chat playground.
+채팅 플레이그라운드에서 몇 가지 즉각적인 엔지니어링 기술을 살펴보는 것부터 시작하겠습니다.
 
-1. In **Azure OpenAI Studio** at `https://oai.azure.com`, in the **Playground** section, select the **Chat** page. The **Chat** playground page consists of three main sections:
-    - **Setup** - used to set the context for the model's responses.
-    - **Chat session** - used to submit chat messages and view responses.
-    - **Configuration** - used to configure settings for the model deployment.
-2. In the **Configuration** section, ensure that your model deployment is selected.
-3. In the **Setup** area, select the default system message template to set the context for the chat session. The default system message is *You are an AI assistant that helps people find information*.
-4. In the **Chat session**, submit the following query:
+1. **Azure OpenAI Studio**(`https://oai.azure.com`)의 **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 세 가지 주요 섹션으로 구성됩니다.
+    - **설정** - 모델의 응답에 대한 컨텍스트를 설정하는 데 사용됩니다.
+    - **채팅 세션** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
+    - **구성** - 모델 배포에 대한 설정을 구성하는 데 사용됩니다.
+2. **구성** 섹션에서 모델 배포가 선택되어 있는지 확인합니다.
+3. **설정** 영역에서 기본 시스템 메시지 템플릿을 선택하여 채팅 세션의 컨텍스트를 설정합니다. 기본 시스템 메시지는 *사용자가 정보를 찾는 데 도움이 되는 AI 도우미*입니다.
+4. **채팅 세션**에서 다음 쿼리를 제출합니다.
 
     ```
     What kind of article is this?
@@ -78,13 +78,13 @@ Let's start by exploring some prompt engineering techniques in the Chat playgrou
     Much remains to be determined about how daily life will change as people adjust to a drier normal. But officials are warning the situation is dire and could lead to even more severe limits later in the year.
     ```
 
-    The response provides a description of the article. However, suppose you want a more specific format for article categorization.
+    응답에는 문서에 대한 설명이 제공됩니다. 그러나 문서 분류를 위해 보다 구체적인 형식을 원한다고 가정해 보겠습니다.
 
-5. In the **Setup** section change the system message to `You are a news aggregator that categorizes news articles.`
+5. **설정** 섹션에서 시스템 메시지를 `You are a news aggregator that categorizes news articles.`로 변경
 
-6. Under the new system message, in the **Examples** section, select the **Add** button. Then add the following example.
+6. 새 시스템 메시지 아래의 **예** 섹션에서 **추가** 단추를 선택합니다. 그리고 다음 예를 추가합니다.
 
-    **User:**
+    **사용자**:
     
     ```
     What kind of article is this?
@@ -98,15 +98,15 @@ Let's start by exploring some prompt engineering techniques in the Chat playgrou
     The Chicago Cyclones' two hits came in the 2nd and the 5th innings but were unable to get the runner home to score.
     ```
     
-    **Assistant:**
+    **도우미:**
     
     ```
     Sports
       ```
 
-7. Add another example with the following text.
+7. 다음 텍스트로 다른 예를 추가합니다.
 
-    **User:**
+    **사용자**:
     
     ```
     Categorize this article:
@@ -121,15 +121,15 @@ Let's start by exploring some prompt engineering techniques in the Chat playgrou
     From Robin Kline's history-making win to a full performance by none other than Casey Jensen herself, don't miss tomorrows rerun of all the festivities.
     ```
     
-    **Assistant:**
+    **도우미:**
     
     ```
     Entertainment
     ```
 
-8. Use the **Apply changes** button at the top of the **Setup** section to update the system message.
+8. 시스템 메시지를 업데이트하려면 **설정** 섹션 상단에 있는 **변경 내용 적용** 단추를 사용합니다.
 
-9. In the **Chat session** section, resubmit the following prompt:
+9. **채팅 세션** 섹션에서 다음 프롬프트를 다시 제출합니다.
 
     ```
     What kind of article is this?
@@ -143,22 +143,11 @@ Let's start by exploring some prompt engineering techniques in the Chat playgrou
     Much remains to be determined about how daily life will change as people adjust to a drier normal. But officials are warning the situation is dire and could lead to even more severe limits later in the year.
     ```
 
-    The combination of a more specific system message and some examples of expected queries and responses results in a consistent format for the results.
+    보다 구체적인 시스템 메시지와 예상되는 쿼리 및 응답의 몇 가지 예를 조합하면 일관된 결과 형식이 생성됩니다.
 
-10. In the **Setup** section, change the system message back to the default template, which should be `You are an AI assistant that helps people find information.` with no examples. Then apply the changes.
+10. **설정** 섹션에서 시스템 메시지를 기본 템플릿으로 다시 변경합니다. 기본 템플릿은 예 없이 `You are an AI assistant that helps people find information.`이어야 합니다. 그런 다음 변경 내용을 적용합니다.
 
-11. In the **Chat session** section, submit the following prompt:
-
-    ```
-    # 1. Create a list of animals
-    # 2. Create a list of whimsical names for those animals
-    # 3. Combine them randomly into a list of 25 animal and name pairs
-    ```
-
-    The model will likely respond with an answer to satisfy the prompt, split into a numbered list. This is an appropriate response, but suppose what you actually wanted was for the model to write a Python program that performs the tasks you described?
-
-12. Change the system message to `You are a coding assistant helping write python code.` and apply the changes.
-13. Resubmit the following prompt to the model:
+11. **채팅 세션** 섹션에서 다음 프롬프트를 제출합니다.
 
     ```
     # 1. Create a list of animals
@@ -166,32 +155,43 @@ Let's start by exploring some prompt engineering techniques in the Chat playgrou
     # 3. Combine them randomly into a list of 25 animal and name pairs
     ```
 
-    The model should correctly respond with python code doing what the comments requested.
+    모델은 프롬프트를 충족하기 위해 번호를 매긴 목록으로 나눈 답변으로 응답합니다. 이는 적절한 응답이지만 실제로 원하는 것이 모델이 설명된 작업을 수행하는 Python 프로그램을 작성하는 것이라고 가정해 보겠습니다.
 
-## Prepare to develop an app in Visual Studio Code
+12. 시스템 메시지를 `You are a coding assistant helping write python code.`로 변경하고 변경 내용을 적용합니다.
+13. 모델에 다음 프롬프트를 다시 제출합니다.
 
-Now let's explore the use of prompt engineering in an app that uses the Azure OpenAI service SDK. You'll develop your app using Visual Studio Code. The code files for your app have been provided in a GitHub repo.
+    ```
+    # 1. Create a list of animals
+    # 2. Create a list of whimsical names for those animals
+    # 3. Combine them randomly into a list of 25 animal and name pairs
+    ```
 
-> **Tip**: If you have already cloned the **mslearn-openai** repo, open it in Visual Studio code. Otherwise, follow these steps to clone it to your development environment.
+    모델은 주석이 요청한 작업을 수행하는 Python 코드로 올바르게 응답해야 합니다.
 
-1. Start Visual Studio Code.
-2. Open the palette (SHIFT+CTRL+P) and run a **Git: Clone** command to clone the `https://github.com/MicrosoftLearning/mslearn-openai` repository to a local folder (it doesn't matter which folder).
-3. When the repository has been cloned, open the folder in Visual Studio Code.
+## Visual Studio Code에서 앱 개발 준비
 
-    > **Note**: If Visual Studio Code shows you a pop-up message to prompt you to trust the code you are opening, click on **Yes, I trust the authors** option in the pop-up.
+이제 Azure OpenAI 서비스 SDK를 사용하는 앱에서 프롬프트 엔지니어링을 사용하는 방법을 살펴보겠습니다. 여기서는 Visual Studio Code를 사용하여 앱을 개발합니다. 앱의 코드 파일은 GitHub 리포지토리에 제공되었습니다.
 
-4. Wait while additional files are installed to support the C# code projects in the repo.
+> **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
-    > **Note**: If you are prompted to add required assets to build and debug, select **Not Now**.
+1. Visual Studio Code 시작
+2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
-## Configure your application
+    > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
 
-Applications for both C# and Python have been provided, and both apps feature the same functionality. First, you'll complete some key parts of the application to enable using your Azure OpenAI resource with asynchronous API calls.
+4. 리포지토리의 C# 코드 프로젝트를 지원하는 추가 파일이 설치되는 동안 기다립니다.
 
-1. In Visual Studio Code, in the **Explorer** pane, browse to the **Labfiles/03-prompt-engineering** folder and expand the **CSharp** or **Python** folder depending on your language preference. Each folder contains the language-specific files for an app into which you're you're going to integrate Azure OpenAI functionality.
-2. Right-click the **CSharp** or **Python** folder containing your code files and open an integrated terminal. Then install the Azure OpenAI SDK package by running the appropriate command for your language preference:
+    > **참고**: 빌드 및 디버깅에 필요한 자산을 추가하라는 메시지가 표시되면 **나중에**를 선택합니다.
 
-    **C#**:
+## 애플리케이션 사용
+
+C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 동일한 기능을 제공합니다. 먼저, 비동기 API 호출로 Azure OpenAI 리소스를 사용할 수 있도록 애플리케이션의 일부 주요 부분을 완료합니다.
+
+1. Visual Studio Code의 **탐색기** 창에서 **Labfiles/03-prompt-engineering** 폴더를 찾아 언어 선택에 따라 **CSharp** 또는 **Python** 폴더를 확장합니다. 각 폴더에는 Azure OpenAI 기능을 통합할 앱에 대한 언어별 파일이 포함되어 있습니다.
+2. 코드 파일이 포함된 **CSharp** 또는 **Python** 폴더를 마우스 오른쪽 단추로 클릭하고 통합 터미널을 엽니다. 그런 다음, 언어 선택에 적절한 명령을 실행하여 Azure OpenAI SDK 패키지를 설치합니다.
+
+    **C#:**
 
     ```
     dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.14
@@ -203,21 +203,21 @@ Applications for both C# and Python have been provided, and both apps feature th
     pip install openai==1.13.3
     ```
 
-3. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the configuration file for your preferred language
+3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
     
-4. Update the configuration values to include:
-    - The  **endpoint** and a **key** from the Azure OpenAI resource you created (available on the **Keys and Endpoint** page for your Azure OpenAI resource in the Azure portal)
-    - The **deployment name** you specified for your model deployment (available in the **Deployments** page in Azure OpenAI Studio).
-5. Save the configuration file.
+4. 다음을 포함하도록 구성 값을 업데이트합니다.
+    - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
+    - 모델 배포에 대해 지정한 **배포 이름**(Azure OpenAI Studio의 **배포** 페이지에서 사용 가능)
+5. 구성 파일을 저장합니다.
 
-## Add code to use the Azure OpenAI service
+## Azure OpenAI 서비스를 사용하기 위한 코드 추가
 
-Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
+이제 Azure OpenAI SDK를 사용하여 배포된 모델을 사용할 준비가 되었습니다.
 
-1. In the **Explorer** pane, in the **CSharp** or **Python** folder, open the code file for your preferred language, and replace the comment ***Add Azure OpenAI package*** with code to add the Azure OpenAI SDK library:
+1. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 코드 파일을 열고 ***Azure OpenAI 패키지 추가*** 주석을 Azure OpenAI SDK 라이브러리를 추가하는 코드로 바꿉니다.
 
     **C#**: Program.cs
 
@@ -233,7 +233,7 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
     from openai import AsyncAzureOpenAI
     ```
 
-2. In the code file, find the comment ***Configure the Azure OpenAI client***, and add code to configure the Azure OpenAI client:
+2. 코드 파일에서 ***Azure OpenAI 클라이언트 구성*** 주석을 찾아 Azure OpenAI 클라이언트를 구성하는 코드를 추가합니다.
 
     **C#**: Program.cs
 
@@ -253,7 +253,7 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
         )
     ```
 
-3. In the function that calls the Azure OpenAI model, under the comment ***Format and send the request to the model***, add the code to format and send the request to the model.
+3. Azure OpenAI 모델을 호출하는 함수의 ***형식을 지정하고 모델에 요청 보내기*** 주석 아래에 형식을 지정하고 모델에 요청을 보내는 코드를 추가합니다.
 
     **C#**: Program.cs
 
@@ -295,44 +295,44 @@ Now you're ready to use the Azure OpenAI SDK to consume your deployed model.
     )
     ```
 
-4. Save the changes to the code file.
+4. 변경 내용을 코드 파일에 저장합니다.
 
-## Run your application
+## 애플리케이션 실행
 
-Now that your app has been configured, run it to send your request to your model and observe the response. You'll notice the only difference between the different options is the content of the prompt, all other parameters (such as token count and temperature) remain the same for each request.
+이제 앱이 구성되었으므로 앱을 실행하여 모델에 요청을 보내고 응답을 확인합니다. 서로 다른 옵션 간의 유일한 차이점은 프롬프트의 내용이며, 다른 모든 매개 변수(예: 토큰 수 및 온도)는 각 요청에서 동일하게 유지됩니다.
 
-1. In the folder of your preferred language, open `system.txt` in Visual Studio Code. For each of the interations, you'll enter the **System message** in this file and save it. Each iteration will pause first for you to change the system message.
-1. In the interactive terminal pane, ensure the folder context is the folder for your preferred language. Then enter the following command to run the application.
+1. Visual Studio Code에서 기본 설정 언어 폴더의 `system.txt`를 엽니다. 각 상호 작용에 대해 이 파일에 **시스템 메시지**를 입력하고 저장합니다. 각 반복은 시스템 메시지를 변경할 수 있도록 먼저 일시 중지됩니다.
+1. 대화형 터미널 창에서 폴더 컨텍스트가 기본 설정 언어의 폴더인지 확인합니다. 그런 후 다음 명령을 입력하여 애플리케이션을 실행합니다.
 
     - **C#**: `dotnet run`
     - **Python**: `python prompt-engineering.py`
 
-    > **Tip**: You can use the **Maximize panel size** (**^**) icon in the terminal toolbar to see more of the console text.
+    > **팁**: 터미널 도구 모음의 **패널 크기 최대화**(**^**) 아이콘을 사용하면 더 많은 콘솔 텍스트를 볼 수 있습니다.
 
-1. For the first iteration, enter the following prompts:
+1. 첫 번째 반복의 경우 다음 프롬프트를 입력합니다.
 
-    **System message**
+    **시스템 메시지**
 
     ```prompt
     You are an AI assistant
     ```
 
-    **User message:**
+    **사용자 메시지:**
 
     ```prompt
     Write an intro for a new wildlife Rescue
     ```
 
-1. Observe the output. The AI model will likely produce a good generic introduction to a wildlife rescue.
-1. Next, enter the following prompts which specify a format for the response:
+1. 출력을 확인합니다. AI 모델은 야생 동물 구조에 대한 좋은 일반적인 소개를 생성할 가능성이 높습니다.
+1. 그런 다음, 응답 형식을 지정하는 다음 프롬프트를 입력합니다.
 
-    **System message**
+    **시스템 메시지**
 
     ```prompt
     You are an AI assistant helping to write emails
     ```
 
-    **User message:**
+    **사용자 메시지:**
 
     ```prompt
     Write a promotional email for a new wildlife rescue, including the following: 
@@ -341,16 +341,16 @@ Now that your app has been configured, run it to send your request to your model
     - Call for donations to be given at our website
     ```
 
-1. Observe the output. This time, you'll likely see the format of an email with the specific animals included, as well as the call for donations.
-1. Next, enter the following prompts that additionally specify the content:
+1. 출력을 확인합니다. 이번에는 특정 동물 이야기가 포함된 이메일 양식과 함께 기부 요청을 보게 될 수 있습니다.
+1. 그런 다음, 콘텐츠를 추가로 지정하는 다음 프롬프트를 입력합니다.
 
-    **System message**
+    **시스템 메시지**
 
     ```prompt
     You are an AI assistant helping to write emails
     ```
 
-    **User message:**
+    **사용자 메시지:**
 
     ```prompt
     Write a promotional email for a new wildlife rescue, including the following: 
@@ -360,16 +360,16 @@ Now that your app has been configured, run it to send your request to your model
     \n Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
     ```
 
-1. Observe the output, and see how the email has changed based on your clear instructions.
-1. Next, enter the following prompts where we add details about tone to the system message:
+1. 출력을 관찰하고 명확한 지침에 따라 이메일이 어떻게 변경되었는지 확인합니다.
+1. 그런 다음, 시스템 메시지에 톤에 대한 세부 정보를 추가하는 다음 프롬프트를 입력합니다.
 
-    **System message**
+    **시스템 메시지**
 
     ```prompt
     You are an AI assistant that helps write promotional emails to generate interest in a new business. Your tone is light, chit-chat oriented and you always include at least two jokes.
     ```
 
-    **User message:**
+    **사용자 메시지:**
 
     ```prompt
     Write a promotional email for a new wildlife rescue, including the following: 
@@ -379,10 +379,10 @@ Now that your app has been configured, run it to send your request to your model
     \n Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
     ```
 
-1. Observe the output. This time you'll likely see the email in a similar format, but with a much more informal tone. You'll likely even see jokes included!
-1. For the final iteration, we're deviating from email generation and exploring *grounding context*. Here you provide a simple system message, and change the app to provide the grounding context as the beginning of the user prompt. The app will then append the user input, and extract information from the grounding context to answer our user prompt.
-1. Open the file `grounding.txt` and briefly read the grounding context you'll be inserting.
-1. In your app immediately after the comment ***Format and send the request to the model*** and before any existing code, add the following code snippet to read text in from `grounding.txt` to augment the user prompt with the grounding context.
+1. 출력을 확인합니다. 이번에는 형식은 비슷하지만 어조는 훨씬 비공식적인 이메일을 볼 수 있습니다. 어쩌면 농담도 포함되어 있을 수 있습니다!
+1. 최종 반복에서는 이메일 생성에서 벗어나 *기본 컨텍스트*를 살펴봅니다. 여기서는 간단한 시스템 메시지를 제공하고 사용자 프롬프트의 시작으로 근거 있는 컨텍스트를 제공하도록 앱을 변경합니다. 그런 다음 앱은 사용자 입력을 추가하고 근거 있는 컨텍스트에서 정보를 추출하여 사용자 프롬프트에 답변합니다.
+1. 파일 `grounding.txt`를 열고 삽입할 근거 있는 컨텍스트를 간략하게 읽습니다.
+1. 앱에서 ***형식을 지정하고 모델에 요청 보내기*** 주석 바로 뒤와 기존 코드 앞에 다음 코드 조각을 추가하여 `grounding.txt`에서 텍스트를 읽어 기본 컨텍스트로 사용자 프롬프트를 강화합니다.
 
     **C#**: Program.cs
 
@@ -402,23 +402,23 @@ Now that your app has been configured, run it to send your request to your model
     user_message = grounding_text + user_message
     ```
 
-1. Save the file and rerun your app.
-1. Enter the following prompts (with the **system message** still being entered and saved in `system.txt`).
+1. 파일을 저장하고 앱을 다시 실행합니다.
+1. 다음 프롬프트를 입력합니다(**시스템 메시지**가 계속 입력되어 `system.txt`에 저장되어 있음).
 
-    **System message**
+    **시스템 메시지**
 
     ```prompt
     You're an AI assistant who helps people find information. You'll provide answers from the text provided in the prompt, and respond concisely.
     ```
 
-    **User message:**
+    **사용자 메시지:**
 
     ```prompt
     What animal is the favorite of children at Contoso?
     ```
 
-> **Tip**: If you would like to see the full response from Azure OpenAI, you can set the **printFullResponse** variable to `True`, and rerun the app.
+> **팁**: Azure OpenAI의 전체 응답을 보려면 **printFullResponse** 변수를 `True`로 설정하고 앱을 다시 실행합니다.
 
-## Clean up
+## 정리
 
-When you're done with your Azure OpenAI resource, remember to delete the deployment or the entire resource in the **Azure portal** at `https://portal.azure.com`.
+Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 배포 또는 전체 리소스를 삭제해야 합니다.
