@@ -66,11 +66,11 @@ Azure OpenAI를 데이터에 연결하기 전에 먼저 기본 모델이 기반 
 3. **설정** 영역에서 기본 시스템 메시지 템플릿을 선택하여 채팅 세션의 컨텍스트를 설정합니다. 기본 시스템 메시지는 *사용자가 정보를 찾는 데 도움이 되는 AI 도우미*입니다.
 4. **채팅 세션**에서 다음 쿼리를 제출하고 응답을 검토합니다.
 
-    ```
+    ```prompt
     I'd like to take a trip to New York. Where should I stay?
     ```
 
-    ```
+    ```prompt
     What are some facts about New York?
     ```
 
@@ -121,11 +121,11 @@ Azure OpenAI를 데이터에 연결하기 전에 먼저 기본 모델이 기반 
 
 이제 데이터를 추가했으므로 이전과 동일한 질문을 하고 응답이 어떻게 다른지 확인합니다.
 
-```
+```prompt
 I'd like to take a trip to New York. Where should I stay?
 ```
 
-```
+```prompt
 What are some facts about New York?
 ```
 

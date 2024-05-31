@@ -101,13 +101,13 @@ Azure OpenAI 서비스는 모델을 배포, 관리 및 탐색하는 데 사용�
 
     **사용자**:
     
-    ```
+    ```prompt
     Write an advertisement for the lightweight "Ultramop" mop, which uses patented absorbent materials to clean floors.
     ```
     
     **도우미:**
     
-    ```
+    ```prompt
     Welcome to the future of cleaning!
     
     The Ultramop makes light work of even the dirtiest of floors. Thanks to its patented absorbent materials, it ensures a brilliant shine. Just look at these features:
@@ -155,7 +155,7 @@ Azure OpenAI Studio 플레이그라운드에서 생성형 AI 모델의 기능 �
 1. 웹앱이 성공적으로 배포되면 **채팅** 플레이그라운드 페이지 오른쪽 상단에 있는 단추를 사용하여 웹앱을 시작합니다. 앱이 시작되는 데 몇 분 정도 걸릴 수 있습니다. 메시지가 표시되면 권한 요청을 수락합니다.
 1. 웹앱에서 다음 채팅 메시지를 입력합니다.
 
-    ```
+    ```prompt
     Write an advertisement for the new "WonderWipe" cloth that attracts dust particulates and can be used to clean any household surface.
     ```
 

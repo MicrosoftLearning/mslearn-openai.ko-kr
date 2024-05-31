@@ -66,7 +66,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
 3. **설정** 영역에서 기본 시스템 메시지 템플릿을 선택하여 채팅 세션의 컨텍스트를 설정합니다. 기본 시스템 메시지는 *사용자가 정보를 찾는 데 도움이 되는 AI 도우미*입니다.
 4. **채팅 세션**에서 다음 쿼리를 제출합니다.
 
-    ```
+    ```prompt
     What kind of article is this?
     ---
     Severe drought likely in California
@@ -86,7 +86,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
 
     **사용자**:
     
-    ```
+    ```prompt
     What kind of article is this?
     ---
     New York Baseballers Wins Big Against Chicago
@@ -100,7 +100,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
     
     **도우미:**
     
-    ```
+    ```prompt
     Sports
       ```
 
@@ -108,7 +108,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
 
     **사용자**:
     
-    ```
+    ```prompt
     Categorize this article:
     ---
     Joyous moments at the Oscars
@@ -123,7 +123,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
     
     **도우미:**
     
-    ```
+    ```prompt
     Entertainment
     ```
 
@@ -131,7 +131,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
 
 9. **채팅 세션** 섹션에서 다음 프롬프트를 다시 제출합니다.
 
-    ```
+    ```prompt
     What kind of article is this?
     ---
     Severe drought likely in California
@@ -149,7 +149,7 @@ Azure OpenAI는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있�
 
 11. **채팅 세션** 섹션에서 다음 프롬프트를 제출합니다.
 
-    ```
+    ```prompt
     # 1. Create a list of animals
     # 2. Create a list of whimsical names for those animals
     # 3. Combine them randomly into a list of 25 animal and name pairs
