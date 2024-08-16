@@ -78,6 +78,7 @@ Azure OpenAI Service를 사용하면 기본 LLM의 인텔리전스와 함께 자
 1. Azure Portal에서 Azure OpenAI 리소스로 이동합니다. 그런 다음, 링크를 사용하여 **Azure AI 스튜디오**에서 리소스를 엽니다.
 1. Azure AI 스튜디오의 **배포** 페이지에서 기존 모델 배포를 확인합니다. 그런 다음, 다음 설정을 사용하여 **text-embedding-ada-002** 모델의 새 기본 모델 배포를 만듭니다.
     - **배포 이름**: text-embedding-ada-002
+    - **모델**: text-embedding-ada-002
     - **모델 버전**: *기본 버전*
     - **배포 유형**: 표준
     - **분당 토큰 속도 제한**: 5K\*
