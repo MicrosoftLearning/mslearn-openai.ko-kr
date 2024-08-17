@@ -16,7 +16,7 @@ Azure OpenAI Service에는 DALL-E라는 이미지 생성 모델이 포함되어 
 Azure OpenAI를 사용하여 이미지를 생성하려면 먼저 Azure 구독에서 Azure OpenAI 리소스를 프로비전해야 합니다. 리소스는 DALL-E 모델이 지원되는 지역에 있어야 합니다.
 
 1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
-2. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
+1. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
     - **구독**: *DALL-E를 포함하여 Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
     - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
     - **지역**: ***미국 동부** 또는 **스웨덴 중부***\*을 선택합니다.
@@ -25,21 +25,29 @@ Azure OpenAI를 사용하여 이미지를 생성하려면 먼저 Azure 구독에
 
     > \* DALL-E 3 모델은 **미국 동부** 및 **스웨덴 중부** 지역의 Azure OpenAI 서비스 리소스에서만 사용할 수 있습니다.
 
-3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
+1. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
+1. Azure OpenAI 리소스에 대한 **개요** 페이지에서 **시작** 섹션까지 아래로 스크롤하고 **AI 스튜디오**로 이동하는 단추를 선택합니다.
+1. Azure OpenAI 스튜디오의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. DALL-E 3에 대한 배포가 아직 없는 경우 다음 설정을 사용하여 **dall-e-3** 모델의 새 배포를 만듭니다.
+    - **배포 이름**: dalle3
+    - **모델 버전**: *기본 버전 사용*
+    - **배포 유형**: 표준
+    - **용량 단위**: 1K
+    - **콘텐츠 필터**: 기본값
+    - **동적 할당량 사용**: 사용할 수 없음
+1. 배포가 되었으면 왼쪽 창의 **이미지** 페이지로 다시 이동합니다.
 
-## DALL-E 플레이그라운드에서 이미지 생성을 살펴봅니다.
+## 이미지 플레이그라운드에서 이미지 생성을 살펴봅니다.
 
-**Azure OpenAI Studio**의 DALL-E 플레이그라운드를 사용하여 이미지 생성을 실험할 수 있습니다.
+**Azure AI 스튜디오**의 이미지 플레이그라운드를 사용하여 이미지 생성을 실험할 수 있습니다.
 
-1. Azure Portal의 Azure OpenAI 리소스에 대한 **개요** 페이지에서 **탐색** 단추를 사용하여 새 브라우저 탭에서 Azure OpenAI Studio를 엽니다. 또는 `https://oai.azure.com`에서 직접 [Azure OpenAI Studio](https://oai.azure.com)로 이동합니다.
-2. **플레이그라운드** 섹션에서 **DALL-E** 플레이그라운드를 선택합니다. *Dalle3*이라는 DALL-E 모델 배포가 자동으로 만들어집니다.
-3. **프롬프트** 상자에 생성하려는 이미지에 대한 설명을 입력합니다. 예: `An elephant on a skateboard` 그런 다음 **생성**을 선택하고 생성된 이미지를 확인합니다.
+1. **이미지 플레이그라운드** 섹션에서 DALL-E 3 배포를 자동으로 선택해야 합니다. 선택되지 않은 경우 배포 드롭다운에서 선택합니다.
+1. **프롬프트** 상자에 생성하려는 이미지에 대한 설명을 입력합니다. 예: `An elephant on a skateboard` 그런 다음 **생성**을 선택하고 생성된 이미지를 확인합니다.
 
-    ![생성된 이미지가 있는 Azure OpenAI Studio의 DALL-E 플레이그라운드.](../media/dall-e-playground.png)
+    ![생성된 이미지가 있는 Azure AI 스튜디오의 이미지 플레이그라운드.](../media/images-playground.png)
 
-4. 보다 구체적인 설명을 제공하도록 프롬프트를 수정합니다. 예: `An elephant on a skateboard in the style of Picasso`. 그런 다음 새 이미지를 생성하고 결과를 검토합니다.
+1. 보다 구체적인 설명을 제공하도록 프롬프트를 수정합니다. 예: `An elephant on a skateboard in the style of Picasso`. 그런 다음 새 이미지를 생성하고 결과를 검토합니다.
 
-    ![두 개의 생성된 이미지가 있는 Azure OpenAI Studio의 DALL-E 플레이그라운드.](../media/dall-e-playground-new-image.png)
+    ![두 개의 생성된 이미지가 있는 Azure AI 스튜디오의 이미지 플레이그라운드.](../media/images-playground-new-style.png)
 
 ## REST API를 사용하여 이미지 생성
 
@@ -87,6 +95,8 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
     - 이 코드는 헤더에 서비스 키를 포함하여 서비스 엔드포인트에 https 요청을 보냅니다. 이 두 값은 모두 구성 파일에서 가져옵니다.
     - 요청에는 이미지 기반 프롬프트, 생성할 이미지 수, 생성된 이미지 크기 등 일부 매개 변수가 포함됩니다.
     - 응답에는 DALL-E 모델이 사용자가 제공한 프롬프트에서 추정하여 더 설명적으로 표현한 수정된 프롬프트와 생성된 이미지의 URL이 포함됩니다.
+    
+    > **중요**: 권장 되는 *dalle3* 이외의 배포 이름을 지정한 경우 배포 이름을 사용하도록 코드를 업데이트해야 합니다.
 
 ### 앱 실행
 
