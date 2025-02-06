@@ -59,12 +59,12 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
 채팅 플레이그라운드에서 몇 가지 즉각적인 엔지니어링 기술을 살펴보는 것부터 시작하겠습니다.
 
-1. **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 단추 행과 두 가지 기본 패널로 구성됩니다(화면 해상도에 따라 오른쪽에서 왼쪽으로 수평으로 배열되거나 위에서 아래로 수직으로 배열될 수 있음).
-    - **구성** - 배포를 선택하고, 시스템 메시지를 정의하고, 배포와 상호 작용하기 위한 매개 변수를 설정하는 데 사용됩니다.
-    - **채팅 세션** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
+1. 왼쪽 창의 **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 단추 행과 두 가지 기본 패널로 구성됩니다(화면 해상도에 따라 오른쪽에서 왼쪽으로 수평으로 배열되거나 위에서 아래로 수직으로 배열될 수 있음).
+    - **설정** - 배포를 선택하고, 시스템 메시지를 정의하고, 배포와 상호 작용하기 위한 매개 변수를 설정하는 데 사용됩니다.
+    - **채팅 기록** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
 2. **배포**에서 gpt-35-turbo-16k 모델 배포가 선택되어 있는지 확인합니다.
-1. 기본 **시스템 메시지**를 검토합니다. 이 메시지는 *당신은 사람들이 정보를 찾을 수 있도록 도와주는 AI 도우미입니다*로 표시되어야 합니다.
-4. **채팅 세션**에서 다음 쿼리를 제출합니다.
+1. 선택한 배포 바로 아래 텍스트 상자에 포함된 기본 시스템 메시지를 검토합니다. 이 메시지는 *당신은 사람들이 정보를 찾을 수 있도록 도와주는 AI 도우미입니다*로 표시되어야 합니다.
+4. **채팅 기록**에서 다음 쿼리를 제출합니다.
 
     ```prompt
     What kind of article is this?
@@ -80,7 +80,7 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
     응답에는 문서에 대한 설명이 제공됩니다. 그러나 문서 분류를 위해 보다 구체적인 형식을 원한다고 가정해 보겠습니다.
 
-5. **구성** 섹션에서 시스템 메시지를 `You are a news aggregator that categorizes news articles.`로 변경합니다.
+5. **설정** 섹션에서 시스템 메시지를 `You are a news aggregator that categorizes news articles.`로 변경
 
 6. 새 시스템 메시지에서 **섹션 추가** 단추를 선택하고  **예제**를 선택합니다. 그리고 다음 예를 추가합니다.
 
@@ -127,9 +127,9 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
     Entertainment
     ```
 
-8. **구성** 섹션의 맨 위에 있는 **변경 내용 적용** 단추를 사용하여 변경 내용을 저장합니다.
+8. **설정** 섹션의 시스템 메시지 텍스트 상자 아래에 있는 **변경 내용 적용** 단추를 사용하여 변경 내용을 저장합니다.
 
-9. **채팅 세션** 섹션에서 다음 프롬프트를 다시 제출합니다.
+9. **채팅 기록** 섹션에서 다음 프롬프트를 다시 제출합니다.
 
     ```prompt
     What kind of article is this?
@@ -147,7 +147,7 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
 10. 시스템 메시지를 기본 템플릿으로 다시 변경합니다. 기본 템플릿은 예제 없는 `You are an AI assistant that helps people find information.`이어야 합니다. 그런 다음 변경 내용을 적용합니다.
 
-11. **채팅 세션** 섹션에서 다음 프롬프트를 제출합니다.
+11. **채팅 기록** 섹션에서 다음 프롬프트를 제출합니다.
 
     ```prompt
     # 1. Create a list of animals
@@ -359,7 +359,7 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
     - Rescue name is Contoso 
     - It specializes in elephants, as well as zebras and giraffes 
     - Call for donations to be given at our website 
-    \n Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
+    Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
     ```
 
 1. 출력을 관찰하고 명확한 지침에 따라 이메일이 어떻게 변경되었는지 확인합니다.
@@ -378,7 +378,7 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
     - Rescue name is Contoso 
     - It specializes in elephants, as well as zebras and giraffes 
     - Call for donations to be given at our website 
-    \n Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
+    Include a list of the current animals we have at our rescue after the signature, in the form of a table. These animals include elephants, zebras, gorillas, lizards, and jackrabbits.
     ```
 
 1. 출력을 확인합니다. 이번에는 형식은 비슷하지만 어조는 훨씬 비공식적인 이메일을 볼 수 있습니다. 어쩌면 농담도 포함되어 있을 수 있습니다!
