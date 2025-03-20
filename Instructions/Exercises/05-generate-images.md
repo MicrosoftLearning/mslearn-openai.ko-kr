@@ -43,8 +43,6 @@ Azure OpenAI를 사용하여 이미지를 생성하려면 먼저 Azure 구독에
 1. **이미지 플레이그라운드** 섹션에서 DALL-E 3 배포를 자동으로 선택해야 합니다. 선택되지 않은 경우 배포 드롭다운에서 선택합니다.
 1. **프롬프트** 상자에 생성하려는 이미지에 대한 설명을 입력합니다. 예: `An elephant on a skateboard` 그런 다음 **생성**을 선택하고 생성된 이미지를 확인합니다.
 
-    ![생성된 이미지가 있는 Azure AI 파운드리 포털의 이미지 플레이그라운드.](../media/images-playground.png)
-
 1. 보다 구체적인 설명을 제공하도록 프롬프트를 수정합니다. 예: `An elephant on a skateboard in the style of Picasso`. 그런 다음 새 이미지를 생성하고 결과를 검토합니다.
 
     ![두 개의 생성된 이미지가 있는 Azure AI 파운드리 포털의 이미지 플레이그라운드.](../media/images-playground-new-style.png)
