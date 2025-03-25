@@ -1,6 +1,7 @@
 ---
 lab:
   title: Azure OpenAI Service를 사용하여 RAG(검색 증강 생성) 구현
+  status: stale
 ---
 
 # Azure OpenAI Service를 사용하여 RAG(검색 증강 생성) 구현

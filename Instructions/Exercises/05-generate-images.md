@@ -1,6 +1,7 @@
 ---
 lab:
   title: DALL-E 모델로 이미지 생성
+  status: stale
 ---
 
 # DALL-E 모델로 이미지 생성

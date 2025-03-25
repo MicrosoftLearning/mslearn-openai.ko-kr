@@ -1,125 +1,299 @@
 ---
 lab:
-  title: DALL-E 모델로 이미지 생성
+  title: AI를 사용하여 이미지 생성
+  description: DALL-E OpenAI 모델을 사용하여 이미지를 생성하는 방법을 알아봅니다.
+  status: new
 ---
 
-# DALL-E 모델로 이미지 생성
+# AI를 사용하여 이미지 생성
 
-Azure OpenAI Service에는 DALL-E라는 이미지 생성 모델이 포함되어 있습니다. 이 모델을 사용하여 원하는 이미지를 설명하는 자연어 프롬프트를 제출할 수 있으며, 모델은 제공한 설명을 기반으로 원본 이미지를 생성합니다.
+이 연습에서는 OpenAI DALL-E 생성형 AI 모델을 사용하여 이미지를 생성합니다. Azure AI 파운드리 및 Azure OpenAI Service를 사용하여 앱을 개발합니다.
 
-이 연습에서는 DALL-E 버전 3 모델을 사용하여 자연어 프롬프트를 기반으로 이미지를 생성합니다.
+이 연습에는 약 **30**분이 소요됩니다.
 
-이 연습은 약 **25**분 정도 소요됩니다.
+## Azure AI 파운드리 프로젝트 만들기
 
-## Azure OpenAI 리소스 프로비전
+먼저 Azure AI 파운드리 프로젝트를 만들어 보겠습니다.
 
-Azure OpenAI를 사용하여 이미지를 생성하려면 먼저 Azure 구독에서 Azure OpenAI 리소스를 프로비전해야 합니다. 리소스는 DALL-E 모델이 지원되는 지역에 있어야 합니다.
+1. 웹 브라우저에서 [Azure AI 파운드리 포털](https://ai.azure.com)(`https://ai.azure.com`)을 열고 Azure 자격 증명을 사용하여 로그인합니다. 처음 로그인할 때 열리는 팁이나 빠른 시작 창을 닫고 필요한 경우 왼쪽 위에 있는 **Azure AI 파운드리** 로고를 사용하여 다음 이미지와 유사한 홈 페이지로 이동합니다.
 
-1. `https://portal.azure.com`에서 **Azure Portal**에 로그인합니다.
-1. 다음 설정을 사용하여 **Azure OpenAI** 리소스를 만듭니다.
-    - **구독**: *DALL-E를 포함하여 Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
-    - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
-    - **지역**: ***미국 동부**, **오스트레일리아 동부** 또는 **스웨덴 중부*** 선택\*
-    - **이름**: ‘원하는 고유한 이름’**
-    - **가격 책정 계층**: 표준 S0
+    ![Azure AI Foundry 포털의 스크린샷.](../media/ai-foundry-home.png)
 
-    > \*DALL-E 3 모델은 **미국 동부**, **오스트레일리아 동부** 및 **스웨덴 중부** 지역의 Azure OpenAI 서비스 리소스에서만 사용할 수 있습니다.
+1. 홈페이지에서 **+ 프로젝트 만들기**를 선택합니다.
+1. **프로젝트 만들기** 마법사에서 적절한 프로젝트 이름(예`my-ai-project`: )을 입력한 다음, 프로젝트를 지원하기 위해 자동으로 만들어지는 Azure 리소스를 검토합니다.
+1. **사용자 지정**을 선택하고 허브에 대해 다음 설정을 지정합니다.
+    - **허브 이름**: *고유한 이름 - 예: `my-ai-hub`*
+    - **구독**: ‘Azure 구독’
+    - **리소스 그룹**: *고유한 이름(예: `my-ai-resources`)으로 새 리소스 그룹을 만들거나 기존 리소스 그룹 선택*
+    - **위치**: **선택 도움말**을 선택한 다음 위치 도우미 창에서 **dalle**를 선택하고 추천 지역을 사용합니다.\*
+    - **Azure AI Services 또는 Azure OpenAI** 연결: *적절한 이름으로 새 AI Services 리소스를 만들거나(예 `my-ai-services`:) 기존 리소스를 사용합니다.*
+    - **Azure AI 검색 연결**: 연결 건너뛰기
 
-1. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 테넌트 수준에서 제한됩니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-## 모델 배포
+1. **다음**을 선택하여 구성을 검토합니다. **만들기**를 선택하고 프로세스가 완료될 때까지 기다립니다.
+1. 프로젝트를 만들 때 표시되는 팁을 모두 닫고 Azure AI 파운드리 포털에서 프로젝트 페이지를 검토합니다. 이 페이지는 다음 이미지와 유사합니다.
 
-다음으로 CLI에서 **dalle3** 모델의 배포를 만듭니다. Azure Portal에서 위쪽 메뉴 모음에서 **Cloud Shell** 아이콘을 선택하고 터미널이 **Bash**로 설정되어 있는지 확인합니다. 이 예제를 사용하여 다음 변수를 사용자 고유의 값으로 바꿉니다.
+    ![Azure AI 파운드리 포털의 Azure AI 프로젝트 세부 정보 스크린샷.](../media/ai-foundry-project.png)
 
-```dotnetcli
-az cognitiveservices account deployment create \
-   -g *your resource group* \
-   -n *your Open AI resource* \
-   --deployment-name dall-e-3 \
-   --model-name dall-e-3 \
-   --model-version 3.0  \
-   --model-format OpenAI \
-   --sku-name "Standard" \
-   --sku-capacity 1
-```
+## DALL-E 모델 배포
 
-    > \* Sku-capacity is measured in thousands of tokens per minute. A rate limit of 1,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+이제 이미지 생성을 지원하기 위해 DALL-E 모델을 배포할 준비가 되었습니다.
 
+1. Azure AI 파운드리 프로젝트 페이지의 오른쪽 위에 있는 도구 모음에서 **미리 보기 기능** 아이콘을 사용하여 **Azure AI 모델 유추 서비스 기능에 모델 배포**를 사용하도록 설정합니다.
+1. 프로젝트 왼쪽 창의 **내 자산** 섹션에서 **모델 + 엔드포인트** 페이지를 선택합니다.
+1. **모델 + 엔드포인트** 페이지의 **모델 배포** 탭의 **+ 모델 배포** 메뉴에서 **기본 모델 배포**를 선택합니다.
+1. 목록에서 **dall-e-3** 모델을 검색한 다음 선택하고 확인합니다.
+1. 메시지가 표시되면 사용권 계약에 동의한 다음 배포 세부 정보에서 **사용자 지정**을 선택하여 다음 설정을 사용하여 모델을 배포합니다.
+    - **배포 이름**: *모델 배포의 고유한 이름입니다. 예를 들어 `dall-e-3`(할당한 이름을 기억하세요. 나중에* 필요합니다.)
+    - **배포 유형**: 표준
+    - **배포 세부 정보**: *기본 설정 사용*
+1. 배포 프로비전 상태가 **완료**될 때까지 기다립니다.
 
-## REST API를 사용하여 이미지 생성
+## 플레이그라운드의 모델 테스트
 
-Azure OpenAI 서비스는 DALL-E 모델에서 생성된 이미지를 포함하여 콘텐츠 생성을 위한 프롬프트를 제출하는 데 사용할 수 있는 REST API를 제공합니다.
+클라이언트 애플리케이션을 만들기 전에 플레이그라운드에서 DALL-E 모델을 테스트해 보겠습니다.
 
-### Visual Studio Code에서 앱 개발 준비
+1. 배포한 DALL-E 모델의 페이지에서 **플레이그라운드에서 열기**를 선택합니다(또는 **플레이그라운드** 페이지에서 **이미지 플레이그라운드** 열기).
+1. DALL-E 모델 배포가 선택되어 있는지 확인합니다. 그런 다음 **프롬프트** 상자에 프롬프트를 입력합니다(예: `Create an image of an robot eating spaghetti`).
+1. 플레이그라운드에서 결과 이미지를 검토합니다.
 
-이제 Azure OpenAI 서비스를 사용하여 이미지를 생성하는 사용자 지정 앱을 빌드하는 방법을 살펴보겠습니다. 여기서는 Visual Studio Code를 사용하여 앱을 개발합니다. 앱의 코드 파일은 GitHub 리포지토리에 제공되었습니다.
+    ![생성된 이미지가 있는 이미지 플레이그라운드의 스크린샷.](../media/images-playground.png)
 
-> **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
+1. 후속 프롬프트(예:`Show the robot in a restaurant`)를 입력하고 결과 이미지를 검토합니다.
+1. 새 프롬프트를 사용하여 테스트를 계속하여 만족할 때까지 이미지를 구체화합니다.
 
-1. Visual Studio Code 시작
-2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
-3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
+## 클라이언트 애플리케이션 생성하기
 
-    > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
+플레이그라운드에서 일하는 것 같은 모델입니다. 이제 Azure OpenAI SDK를 사용하여 클라이언트 애플리케이션에서 사용할 수 있습니다.
 
-4. 리포지토리의 C# 코드 프로젝트를 지원하는 추가 파일이 설치되는 동안 기다립니다.
+> **팁**: Python 또는 Microsoft C#을 사용하여 솔루션을 개발하도록 선택할 수 있습니다. 선택한 언어의 해당 섹션에 있는 지침을 따릅니다.
 
-    > **참고**: 빌드 및 디버깅에 필요한 자산을 추가하라는 메시지가 표시되면 **나중에**를 선택합니다.
+### 애플리케이션 구성 준비
 
-### 애플리케이션 사용
+1. Azure AI 파운드리 포털에서 프로젝트의 **개요** 페이지를 봅니다.
+1. **프로젝트 세부 정보** 영역에서 **프로젝트 연결 문자열**을 확인합니다. 이 연결 문자열 사용하여 클라이언트 응용 프로그램에서 프로젝트에 연결합니다.
+1. 새 브라우저 탭을 엽니다(Azure AI 파운드리 포털을 기존 탭에서 열어 두기). 그런 다음 새 탭에서 [Azure Portal](https://portal.azure.com)(`https://portal.azure.com`)을 열고 메시지가 나타나면 Azure 자격 증명을 사용하여 로그인합니다.
+1. 페이지 상단의 검색 창 오른쪽에 있는 **[\>_]** 단추를 사용하여 Azure Portal에서 새 Cloud Shell을 만들고 ***PowerShell*** 환경을 선택합니다. Cloud Shell은 다음과 같이 Azure Portal 아래쪽 창에 명령줄 인터페이스를 제공합니다.
 
-C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모두 동일한 기능을 제공합니다. 먼저, Azure OpenAI 리소스에 대한 엔드포인트와 키를 앱의 구성 파일에 추가합니다.
+    > **참고**: 이전에 *Bash* 환경을 사용하는 Cloud Shell을 만든 경우 ***PowerShell***로 전환합니다.
 
-1. Visual Studio Code의 **탐색기** 창에서 **Labfiles/03-image-generation** 폴더를 찾아 언어 선택에 맞게 **CSharp** 또는 **Python** 폴더를 확장합니다. 각 폴더에는 Azure OpenAI 기능을 통합할 앱에 대한 언어별 파일이 포함되어 있습니다.
-2. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
+1. Cloud Shell 도구 모음의 **설정** 메뉴에서 **클래식 버전으로 이동**을 선택합니다(코드 편집기를 사용하는 데 필요).
 
-    - **C#**: appsettings.json
-    - **Python**: .env
-    
-3. 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**를 포함하도록 구성 값을 업데이트합니다(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능).
-4. 구성 파일을 저장합니다.
+    > **팁**: CloudShell에 명령을 붙여넣을 때, 출력이 화면 버퍼의 많은 부분을 차지할 수 있습니다. `cls` 명령을 입력해 화면을 지우면 각 작업에 더 집중할 수 있습니다.
 
-### 애플리케이션 코드 보기
+1. PowerShell 창에서 다음 명령을 입력하여 이 연습이 포함된 GitHub 리포지토리를 복제합니다.
 
-이제 REST API를 호출하고 이미지를 생성하는 데 사용되는 코드를 탐색할 준비가 되었습니다.
+    ```
+    rm -r mslearn-openai -f
+    git clone https://github.com/microsoftlearning/mslearn-openai mslearn-openai
+    ```
 
-1. **탐색기** 창에서 애플리케이션의 기본 코드 파일을 선택합니다.
+> **참고**: 선택한 프로그래밍 언어에 대한 단계를 따릅니다.
 
-    - C#: `Program.cs`
-    - Python: `generate-image.py`
+1. 리포지토리가 복제된 후 애플리케이션 코드 파일이 포함된 폴더로 이동합니다.  
 
-2. 파일에 포함된 코드를 검토하고 다음 주요 기능을 확인합니다.
-    - 이 코드는 헤더에 서비스 키를 포함하여 서비스 엔드포인트에 https 요청을 보냅니다. 이 두 값은 모두 구성 파일에서 가져옵니다.
-    - 요청에는 이미지 기반 프롬프트, 생성할 이미지 수, 생성된 이미지 크기 등 일부 매개 변수가 포함됩니다.
-    - 응답에는 DALL-E 모델이 사용자가 제공한 프롬프트에서 추정하여 더 설명적으로 표현한 수정된 프롬프트와 생성된 이미지의 URL이 포함됩니다.
-    
-    > **중요**: 권장 되는 *dalle3* 이외의 배포 이름을 지정한 경우 배포 이름을 사용하도록 코드를 업데이트해야 합니다.
+    **Python**
 
-### 앱 실행
+    ```
+   cd mslearn-openai/Labfiles/03-image-generation/Python
+    ```
 
-이제 코드를 검토했으므로 코드를 실행하고 일부 이미지를 생성할 차례입니다.
+    **C#**
 
-1. 코드 파일이 포함된 **CSharp** 또는 **Python** 폴더를 마우스 오른쪽 단추로 클릭하고 통합 터미널을 엽니다. 그런 다음 적절한 명령을 입력하여 애플리케이션을 실행합니다.
+    ```
+   cd mslearn-openai/Labfiles/03-image-generation/CSharp
+    ```
 
-   **C#**
-   ```
+1. Cloud Shell 명령줄 창에서 다음 명령을 입력하여 사용할 라이브러리를 설치합니다.
+
+    **Python**
+
+    ```
+   pip install python-dotenv azure-identity azure-ai-projects openai requests
+    ```
+
+    *pip 버전 및 로컬 경로에 대한 오류를 무시할 수 있습니다.*
+
+    **C#**
+
+    ```
+   dotnet add package Azure.Identity
+   dotnet add package Azure.AI.Projects --prerelease
+   dotnet add package Azure.AI.OpenAI
+    ```
+
+1. 제공된 구성 파일을 편집하려면 다음 명령을 입력합니다.
+
+    **Python**
+
+    ```
+   code .env
+    ```
+
+    **C#**
+
+    ```
+   code appsettings.json
+    ```
+
+    코드 편집기에서 파일이 열립니다.
+
+1. 코드 파일에서 **your_project_endpoint** 자리 표시자를 프로젝트의 연결 문자열(Azure AI 파운드리 포털의 프로젝트 **개요** 페이지에서 복사함)로 바꾸고, **your_model_deployment** 자리 표시자를 dall-e-3 모델 배포에 할당한 이름으로 바꿉니다.
+1. 자리 표시자를 바꾼 후 **Ctrl+S** 명령을 사용하여 변경 내용을 저장한 다음 **Ctrl+Q** 명령을 사용하여 Cloud Shell 명령줄을 열어 두고 코드 편집기를 닫습니다.
+
+### 프로젝트에 연결하고 모델과 채팅하는 코드를 작성합니다.
+
+> **팁**: 코드를 추가할 때 올바른 들여쓰기를 유지해야 합니다.
+
+1. 제공된 코드 파일을 편집하려면 다음 명령을 입력합니다.
+
+    **Python**
+
+    ```
+   code dalle-client.py
+    ```
+
+    **C#**
+
+    ```
+   code Program.cs
+    ```
+
+1. 코드 파일에서 파일 상단에 추가된 기존 문에 주목하여 필요한 SDK 네임스페이스를 가져옵니다. 그런 다음 **참조 추가** 주석 아래에 다음 코드를 추가하여 이전에 설치한 라이브러리의 네임스페이스를 참조합니다.
+
+    **Python**
+
+    ```
+   from dotenv import load_dotenv
+   from azure.identity import DefaultAzureCredential
+   from azure.ai.projects import AIProjectClient
+   from openai import AzureOpenAI
+   import requests
+    ```
+
+    **C#**
+
+    ```
+   using Azure.Identity;
+   using Azure.AI.Projects;
+   using Azure.AI.OpenAI;
+   using OpenAI.Images;
+    ```
+
+1. **main** 함수의 **구성 설정 가져오기** 주석 아래에서 해당 코드가 구성 파일에서 정의한 프로젝트 연결 문자열 및 모델 배포 이름 값을 로드한다는 점에 유의합니다.
+1. **프로젝트 클라이언트 초기화** 주석 아래에 다음 코드를 추가하여 현재 로그인한 Azure 자격 증명을 사용하여 Azure AI 파운드리 프로젝트에 연결합니다.
+
+    **Python**
+
+    ```
+   project_client = AIProjectClient.from_connection_string(
+        conn_str=project_connection,
+        credential=DefaultAzureCredential())
+    ```
+
+    **C#**
+
+    ```
+   var projectClient = new AIProjectClient(project_connection,
+                        new DefaultAzureCredential());
+    ```
+
+1. **OpenAI 클라이언트 가져오기** 주석 아래에 다음 코드를 추가하여 모델과 채팅할 클라이언트 개체를 만듭니다.
+
+    **Python**
+
+    ```
+   openai_client = project_client.inference.get_azure_openai_client(api_version="2024-06-01")
+
+    ```
+
+    **C#**
+
+    ```
+   ConnectionResponse connection = projectClient.GetConnectionsClient().GetDefaultConnection(ConnectionType.AzureOpenAI, withCredential: true);
+
+   var connectionProperties = connection.Properties as ConnectionPropertiesApiKeyAuth;
+
+   AzureOpenAIClient openAIClient = new(
+        new Uri(connectionProperties.Target),
+        new AzureKeyCredential(connectionProperties.Credentials.Key));
+
+   ImageClient openAIimageClient = openAIClient.GetImageClient(model_deployment);
+
+    ```
+
+1. 코드에는 사용자가 "종료"를 입력할 때까지 프롬프트를 입력할 수 있도록 하는 루프가 포함되어 있습니다. 그런 다음 루프 섹션의 **이미지 생성하기** 주석 아래에 다음 코드를 추가하여 프롬프트를 제출하고 모델에서 생성된 이미지 URL을 검색합니다.
+
+    **Python**
+
+    ```python
+   result = openai_client.images.generate(
+        model=model_deployment,
+        prompt=input_text,
+        n=1
+    )
+
+    json_response = json.loads(result.model_dump_json())
+    image_url = json_response["data"][0]["url"] 
+    ```
+
+    **C#**
+
+    ```
+   var imageGeneration = await openAIimageClient.GenerateImageAsync(
+            input_text,
+            new ImageGenerationOptions()
+            {
+                Size = GeneratedImageSize.W1024xH1024
+            }
+   );
+   imageUrl= imageGeneration.Value.ImageUri;
+    ```
+
+1. **주** 함수의 나머지 부분에 있는 코드는 이미지 URL과 파일 이름을 제공된 함수에 전달하여 생성된 이미지를 다운로드하고 .png 파일로 저장합니다.
+
+1. **Ctrl+S** 명령을 사용하여 변경 내용을 코드 파일에 저장한 다음 **Ctrl+Q** 명령을 사용하여 Cloud Shell 명령줄을 열어 둔 채 코드 편집기를 닫습니다.
+
+### 클라이언트 애플리케이션 실행
+
+1. Cloud Shell 명령줄 창에서 다음 명령을 입력하여 앱을 실행합니다.
+
+    **Python**
+
+    ```
+   python dalle-client.py
+    ```
+
+    **C#**
+
+    ```
    dotnet run
-   ```
-   
-   **Python**
-   ```
-   pip install requests
-   python generate-image.py
-   ```
+    ```
 
-3. 메시지가 표시되면 이미지에 대한 설명을 입력합니다. 예: *연을 날리는 기린*.
+1. 메시지가 표시되면 이미지에 대한 요청(예: `Create an image of a robot eating pizza`)을 입력합니다. 잠시 후 앱은 이미지가 저장되었는지 확인합니다.
+1. 몇 가지 프롬프트를 더 시도해 보겠습니다. 완료되면 `quit`를 입력하여 프로그램을 종료합니다.
 
-4. 이미지가 생성될 때까지 기다립니다. 하이퍼링크가 터미널 창에 표시됩니다. 그런 다음 하이퍼링크를 선택하여 새 브라우저 탭을 열고 생성된 이미지를 검토합니다.
+    > **참고**: 이 간단한 앱에서는 대화 내용을 유지하는 논리를 구현하지 않았으므로 모델은 각 프롬프트를 이전 프롬프트의 컨텍스트 없이 새 요청으로 처리합니다.
 
-   > **팁**: 앱이 응답을 반환하지 않으면 잠시 기다렸다가 다시 시도합니다. 새로 배포된 리소스를 사용할 수 있게 되기까지 최대 5분이 걸릴 수 있습니다.
+1. 앱에서 생성된 이미지를 다운로드하고 보려면 Cloud Shell 창의 도구 모음에서 **파일 업로드/다운로드** 단추를 사용하여 파일을 다운로드한 다음 엽니다. 파일을 다운로드하려면 다운로드 인터페이스에서 파일 경로를 완료합니다. 예:
 
-5. 생성된 이미지가 포함된 브라우저 탭을 닫고 앱을 다시 실행하여 다른 프롬프트로 새 이미지를 생성합니다.
+    **Python**
+
+    /home/*user*`/mslearn-openai/Labfiles/03-image-generation/Python/images/image_1.png`
+
+    **C#**
+
+    /home/*user*`/mslearn-openai/Labfiles/03-image-generation/CSharp/images/image_1.png`
+
+## 요약
+
+이 연습에서는 Azure AI 파운드리 및 Azure OpenAI SDK를 사용하여 DALL-E 모델을 통해 이미지를 생성하는 클라이언트 애플리케이션을 만들었습니다.
 
 ## 정리
 
-Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 리소스를 삭제해야 합니다.
+DALL-E 탐색을 마쳤으면 이 연습에서 만든 리소스를 삭제하여 불필요한 Azure 비용이 발생하지 않도록 해야 합니다.
+
+1. Azure Portal이 포함된 브라우저 탭으로 돌아가서(또는 새 브라우저 탭의 `https://portal.azure.com`에서 [Azure Portal](https://portal.azure.com)을 다시 열고) 이 연습에 사용된 리소스를 배포한 리소스 그룹의 콘텐츠를 확인합니다.
+1. 도구 모음에서 **리소스 그룹 삭제**를 선택합니다.
+1. 리소스 그룹 이름을 입력하고 삭제할 것인지 확인합니다.
