@@ -17,7 +17,7 @@ lab:
 이 과정용 코드 리포지토리를 아직 복제하지 않았으면 복제해야 합니다.
 
 1. Visual Studio Code 시작
-2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+2. 명령 팔레트(SHIFT+CTRL+P 또는 **보기** > **명령 팔레트...**)를 열고 **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더에 복제합니다(어떤 폴더든 상관없습니다).
 3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 4. 리포지토리의 C# 코드 프로젝트를 지원하는 추가 파일이 설치되는 동안 기다립니다.
 
@@ -47,7 +47,7 @@ lab:
 
     > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 나열된 지역에는 이 연습에 사용된 모델 형식에 대한 기본 할당량이 포함되어 있습니다. 지역을 임의로 선택하면 다른 사용자와 구독을 공유하는 시나리오에서 단일 지역이 할당량 한도에 도달할 위험이 줄어듭니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
-3. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
+1. 배포가 완료될 때까지 기다립니다. 그런 다음, Azure Portal에서 배포된 Azure OpenAI 리소스로 이동합니다.
 
 ## 모델 배포
 
@@ -55,20 +55,17 @@ lab:
 
 ```dotnetcli
 az cognitiveservices account deployment create \
-   -g *Your resource group* \
-   -n *Name of your OpenAI service* \
-   --deployment-name gpt-35-turbo \
-   --model-name gpt-35-turbo \
-   --model-version 0125  \
+   -g <your_resource_group> \
+   -n <your_OpenAI_service> \
+   --deployment-name gpt-4o \
+   --model-name gpt-4o \
+   --model-version 2024-05-13 \
    --model-format OpenAI \
    --sku-name "Standard" \
    --sku-capacity 5
 ```
 
-    > \* Sku-capacity is measured in thousands of tokens per minute. A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
-
-> [!NOTE]
-> 이 연습에서 net7.0 프레임워크가 지원되지 않는 것에 대한 경고가 표시되면 무시해도 됩니다.
+> **참고**: Sku 용량은 분당 수천 개의 토큰 단위로 측정됩니다. 분당 5,000토큰의 속도 제한은 동일한 구독을 사용하는 다른 사용자들을 위해 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
 ## 애플리케이션 사용
 
@@ -79,21 +76,21 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
     **C#:**
 
-    ```
-    dotnet add package Azure.AI.OpenAI --version 2.0.0
+    ```powershell
+    dotnet add package Azure.AI.OpenAI --version 2.1.0
     ```
 
     **Python**:
 
-    ```
-    pip install openai==1.54.3
+    ```powershell
+    pip install openai==1.65.2
     ```
 
 3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
-    
+
 4. 다음을 포함하도록 구성 값을 업데이트합니다.
     - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
     - 모델 배포에 대해 지정한 **배포 이름**입니다.
@@ -138,7 +135,7 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
         azure_endpoint = azure_oai_endpoint, 
         api_key=azure_oai_key,  
         api_version="2024-02-15-preview"
-        )
+    )
     ```
 
 3. Azure OpenAI 모델을 호출하는 함수에서 ***Azure OpenAI 응답을 가져오는*** 주석 아래에 형식을 지정하는 코드를 추가하고 모델에 요청을 보냅니다.
@@ -271,28 +268,112 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
     ```
 
 1. 출력을 확인합니다. 이번에는 형식은 비슷하지만 어조는 훨씬 비공식적인 이메일을 볼 수 있습니다. 어쩌면 농담도 포함되어 있을 수 있습니다!
-1. 최종 반복에서는 이메일 생성에서 벗어나 *기본 컨텍스트*를 살펴봅니다. 여기서는 간단한 시스템 메시지를 제공하고 사용자 프롬프트의 시작으로 근거 있는 컨텍스트를 제공하도록 앱을 변경합니다. 그런 다음 앱은 사용자 입력을 추가하고 근거 있는 컨텍스트에서 정보를 추출하여 사용자 프롬프트에 답변합니다.
+
+## 그라운딩 컨텍스트 사용 및 채팅 기록 유지 관리
+
+1. 마지막 반복에서는 이메일 생성에서 벗어나 *그라운딩 컨텍스트*를 탐색하고 채팅 기록을 유지합니다. 여기에서 간단한 시스템 메시지를 제공하고, 채팅 기록의 시작 부분으로 그라운딩 컨텍스트를 제공하도록 앱을 변경합니다. 그런 다음 앱은 사용자 입력을 추가하고 근거 있는 컨텍스트에서 정보를 추출하여 사용자 프롬프트에 답변합니다.
 1. 파일 `grounding.txt`를 열고 삽입할 근거 있는 컨텍스트를 간략하게 읽습니다.
-1. 앱에서 ***형식을 지정하고 모델에 요청 보내기*** 주석 바로 뒤와 기존 코드 앞에 다음 코드 조각을 추가하여 `grounding.txt`에서 텍스트를 읽어 기본 컨텍스트로 사용자 프롬프트를 강화합니다.
+1. 앱에서 ***메시지 목록 초기화*** 주석 바로 뒤와 기존 코드 앞에 다음 코드 스니펫을 추가하여 `grounding.txt`에서 텍스트를 읽어와서 채팅 기록을 그라운딩 컨텍스트로 초기화합니다.
 
     **C#**: Program.cs
 
     ```csharp
-    // Format and send the request to the model
+    // Initialize messages list
     Console.WriteLine("\nAdding grounding context from grounding.txt");
     string groundingText = System.IO.File.ReadAllText("grounding.txt");
-    userMessage = groundingText + userMessage;
+    var messagesList = new List<ChatMessage>()
+    {
+        new UserChatMessage(groundingText),
+    };
+    ```
+
+    **Python**: application.py
+
+    ```python
+    # Initialize messages array
+    print("\nAdding grounding context from grounding.txt")
+    grounding_text = open(file="grounding.txt", encoding="utf8").read().strip()
+    messages_array = [{"role": "user", "content": grounding_text}]
+    ```
+
+1. ***요청을 포맷하고 모델로 전송*** 주석 아래에서 **while** 루프 끝까지의 코드를 아래 코드로 교체합니다. 코드는 대부분 동일하지만 이제 메시지 배열을 사용하여 모델에 요청을 전송합니다.
+
+    **C#**: Program.cs
+   
+    ```csharp
+    // Format and send the request to the model
+    messagesList.Add(new SystemChatMessage(systemMessage));
+    messagesList.Add(new UserChatMessage(userMessage));
+    GetResponseFromOpenAI(messagesList);
     ```
 
     **Python**: application.py
 
     ```python
     # Format and send the request to the model
-    print("\nAdding grounding context from grounding.txt")
-    grounding_text = open(file="grounding.txt", encoding="utf8").read().strip()
-    user_message = grounding_text + user_message
+    messages_array.append({"role": "system", "content": system_text})
+    messages_array.append({"role": "user", "content": user_text})
+    await call_openai_model(messages=messages_array, 
+        model=azure_oai_deployment, 
+        client=client
+    )
     ```
 
+1. ***Azure OpenAI 엔드포인트로부터 응답을 가져오는 함수 정의*** 주석 아래의 함수 선언 부분을 다음 코드로 교체하여, C#의 `GetResponseFromOpenAI` 또는 Python의 `call_openai_model` 함수 호출 시 채팅 기록 리스트를 사용하도록 합니다.
+
+    **C#**: Program.cs
+   
+    ```csharp
+    // Define the function that gets the response from Azure OpenAI endpoint
+    private static void GetResponseFromOpenAI(List<ChatMessage> messagesList)
+    ```
+
+    **Python**: application.py
+
+    ```python
+    # Define the function that will get the response from Azure OpenAI endpoint
+    async def call_openai_model(messages, model, client):
+    ```
+    
+1. 마지막으로 ***Azure OpenAI에서 응답 받기*** 아래의 모든 코드를 교체합니다. 코드는 대부분 동일하지만 이제 메시지 배열을 사용하여 대화 기록을 저장합니다.
+
+    **C#**: Program.cs
+   
+    ```csharp
+    // Get response from Azure OpenAI
+    ChatCompletionOptions chatCompletionOptions = new ChatCompletionOptions()
+    {
+        Temperature = 0.7f,
+        MaxOutputTokenCount = 800
+    };
+
+    ChatCompletion completion = chatClient.CompleteChat(
+        messagesList,
+        chatCompletionOptions
+    );
+
+    Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
+    messagesList.Add(new AssistantChatMessage(completion.Content[0].Text));
+    ```
+
+    **Python**: application.py
+
+    ```python
+    # Get response from Azure OpenAI
+    print("\nSending request to Azure OpenAI model...\n")
+
+    # Call the Azure OpenAI model
+    response = await client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.7,
+        max_tokens=800
+    )   
+
+    print("Response:\n" + response.choices[0].message.content + "\n")
+    messages.append({"role": "assistant", "content": response.choices[0].message.content})
+    ```
+    
 1. 파일을 저장하고 앱을 다시 실행합니다.
 1. 다음 프롬프트를 입력합니다(**시스템 메시지**가 계속 입력되어 `system.txt`에 저장되어 있음).
 
@@ -308,8 +389,18 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
     What animal is the favorite of children at Contoso?
     ```
 
-> **팁**: Azure OpenAI의 전체 응답을 보려면 **printFullResponse** 변수를 `True`로 설정하고 앱을 다시 실행합니다.
+   모델이 그라운딩 텍스트 정보를 사용하여 질문에 답변하는 것을 확인할 수 있습니다.
 
+1. 시스템 메시지를 변경하지 않고 사용자 메시지에 대해 다음 프롬프트를 입력합니다.
+
+    **사용자 메시지:**
+
+    ```prompt
+    How can they interact with it at Contoso?
+    ```
+
+    이제는 채팅 기록에서 이전 질문에 액세스할 수 있으므로 모델은 "그들"을 아이들로 인식하고 "그것"을 아이들이 좋아하는 동물로 인식합니다.
+   
 ## 정리
 
 Azure OpenAI 리소스 사용이 완료되면 **Azure Portal**의 `https://portal.azure.com`에서 배포 또는 전체 리소스를 삭제해야 합니다.

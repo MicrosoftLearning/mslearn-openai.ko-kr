@@ -74,15 +74,14 @@ Azure OpenAI Service를 사용하면 기본 LLM의 인텔리전스와 함께 자
 - 그라운딩 프롬프트에서 사용하기 위해 효율적으로 인덱싱할 수 있도록 브로슈어의 텍스트를 *벡터화하는* 텍스트 포함 모델입니다.
 - 애플리케이션에서 데이터에 그라운딩된 프롬프트에 대한 응답을 생성하는 데 사용할 수 있는 GPT 모델입니다.
 
-
 ## 모델 배포
 
 다음으로 CLI에서 Azure OpenAI 모델 리소스를 배포합니다. Azure Portal에서 위쪽 메뉴 모음에서 **Cloud Shell** 아이콘을 선택하고 터미널이 **Bash**로 설정되어 있는지 확인합니다. 이 예제를 사용하여 다음 변수를 사용자 고유의 값으로 바꿉니다.
 
 ```dotnetcli
 az cognitiveservices account deployment create \
-   -g *your resource group* \
-   -n *your Open AI resource* \
+   -g <your_resource_group> \
+   -n <your_OpenAI_resource> \
    --deployment-name text-embedding-ada-002 \
    --model-name text-embedding-ada-002 \
    --model-version "2"  \
@@ -91,24 +90,21 @@ az cognitiveservices account deployment create \
    --sku-capacity 5
 ```
 
-    > \* Sku-capacity is measured in thousands of tokens per minute. A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
+> **참고**: Sku 용량은 분당 수천 개의 토큰 단위로 측정됩니다. 분당 5,000토큰의 속도 제한은 동일한 구독을 사용하는 다른 사용자들을 위해 용량을 남겨두면서 이 연습을 충분히 완료할 수 있습니다.
 
-
-텍스트 포함 모델을 배포한 후 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+텍스트 포함 모델이 배포된 후 다음 설정을 사용하여 **gpt-4o** 모델의 새 배포를 만듭니다.
 
 ```dotnetcli
 az cognitiveservices account deployment create \
-   -g *your resource group* \
-   -n *your Open AI resource* \
-   --deployment-name gpt-35-turbo-16k \
-   --model-name gpt-35-turbo-16k \
-   --model-version "0125"  \
+   -g <your_resource_group> \
+   -n <your_OpenAI_resource> \
+   --deployment-name gpt-4o \
+   --model-name gpt-4o \
+   --model-version "2024-05-13" \
    --model-format OpenAI \
    --sku-name "Standard" \
    --sku-capacity 5
 ```
-
-    > \* Sku-capacity is measured in thousands of tokens per minute. A rate limit of 5,000 tokens per minute is more than adequate to complete this exercise while leaving capacity for other people using the same subscription.
 
 ## 인덱스 만들기
 
@@ -130,7 +126,7 @@ az cognitiveservices account deployment create \
     - **모델 배포**: text-embedding-ada-002
     - **인증 유형**: API 키
     - **Azure OpenAI Service에 연결하면 내 계정에 추가 비용이 발생한다는 내용을 확인했음**: 선택됨
-1. 다음 페이지에서 AI 기술을 사용하여 데이터를 추출하거나 이미지를 벡터화하할 옵션을 선택하지 <u>마세요</u>.
+1. 다음 페이지에서 AI 기술을 사용하여 데이터를 추출하거나 이미지를 벡터화하할 옵션을 선택하지 **마세요**.
 1. 다음 페이지에서 의미 체계 순위를 사용하도록 설정하고 인덱서가 한 번 실행되도록 예약합니다.
 1. 마지막 페이지에서 **개체 이름 접두사**를`margies-index` 설정한 다음 인덱스를 만듭니다.
 
@@ -141,7 +137,7 @@ az cognitiveservices account deployment create \
 > **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
 1. Visual Studio Code 시작
-2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+2. 팔레트(SHIFT+CTRL+P 또는 **보기** > **명령 팔레트...**)를 열고 **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 저장소를 로컬 폴더에 복제합니다(어떤 폴더인지는 중요하지 않음).
 3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
     > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
@@ -159,24 +155,25 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
     **C#:**
 
-    ```
-    dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.17
+    ```powershell
+    dotnet add package Azure.AI.OpenAI --version 2.1.0
+    dotnet add package Azure.Search.Documents --version 11.6.0
     ```
 
     **Python**:
 
-    ```
-    pip install openai==1.54.3
+    ```powershell
+    pip install openai==1.65.2
     ```
 
 3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
-    
+
 4. 다음을 포함하도록 구성 값을 업데이트합니다.
     - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
-    - gpt-35-turbo 모델 배포에 대해 지정한 **배포 이름**입니다(`gpt-35-turbo-16k`이어야 함).
+    - gpt-4o 모델 배포에 지정한 **배포 이름**입니다(`gpt-4o`이어야 함).
     - 검색 서비스의 엔드포인트(Azure Portal의 검색 리소스 개요 페이지에 있는 **Url** 값)
     - 검색 리소스용 **키**(Azure Portal의 검색 리소스에 대한 **키** 페이지에서 사용 가능 - 관리자 키 중 하나를 사용할 수 있음)
     - 검색 인덱스의 이름(`margies-index`이어야 함).
@@ -186,55 +183,62 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
 이제 Azure OpenAI SDK를 사용하여 배포된 모델을 사용할 준비가 되었습니다.
 
-1. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 코드 파일을 열고 ***데이터 원본 구성*** 주석을 Azure OpenAI SDK 라이브러리를 추가하는 코드로 바꿉니다.
+1. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 코드 파일을 열고 ***데이터 원본 구성*** 주석을 채팅 완료를 위한 데이터 원본으로 사용할 인덱스에 대한 코드로 바꿉니다.
 
     **C#**: ownData.cs
 
     ```csharp
     // Configure your data source
-    AzureSearchChatExtensionConfiguration ownDataConfig = new()
+    // Extension methods to use data sources with options are subject to SDK surface changes. Suppress the warning to acknowledge this and use the subject-to-change AddDataSource method.
+    #pragma warning disable AOAI001
+    
+    ChatCompletionOptions chatCompletionsOptions = new ChatCompletionOptions()
     {
-            SearchEndpoint = new Uri(azureSearchEndpoint),
-            Authentication = new OnYourDataApiKeyAuthenticationOptions(azureSearchKey),
-            IndexName = azureSearchIndex
+        MaxOutputTokenCount = 600,
+        Temperature = 0.9f,
     };
+    
+    chatCompletionsOptions.AddDataSource(new AzureSearchChatDataSource()
+    {
+        Endpoint = new Uri(azureSearchEndpoint),
+        IndexName = azureSearchIndex,
+        Authentication = DataSourceAuthentication.FromApiKey(azureSearchKey),
+    });
     ```
 
     **Python**: ownData.py
 
     ```python
-# Configure your data source
-text = input('\nEnter a question:\n')
-
-completion = client.chat.completions.create(
-    model=deployment,
-    messages=[
-        {
-            "role": "user",
-            "content": text,
-        },
-    ],
-    extra_body={
-        "data_sources":[
+    # Configure your data source
+    text = input('\nEnter a question:\n')
+    
+    completion = client.chat.completions.create(
+        model=deployment,
+        messages=[
             {
-                "type": "azure_search",
-                "parameters": {
-                    "endpoint": os.environ["AZURE_SEARCH_ENDPOINT"],
-                    "index_name": os.environ["AZURE_SEARCH_INDEX"],
-                    "authentication": {
-                        "type": "api_key",
-                        "key": os.environ["AZURE_SEARCH_KEY"],
+                "role": "user",
+                "content": text,
+            },
+        ],
+        extra_body={
+            "data_sources":[
+                {
+                    "type": "azure_search",
+                    "parameters": {
+                        "endpoint": os.environ["AZURE_SEARCH_ENDPOINT"],
+                        "index_name": os.environ["AZURE_SEARCH_INDEX"],
+                        "authentication": {
+                            "type": "api_key",
+                            "key": os.environ["AZURE_SEARCH_KEY"],
+                        }
                     }
                 }
-            }
-        ],
-    }
-)
+            ],
+        }
+    )
     ```
 
-2. 나머지 코드를 검토하고 데이터 원본 설정에 대한 정보를 제공하는 데 사용되는 요청 본문의 *확장* 사용에 유의해야 합니다.
-
-3. 변경 내용을 코드 파일에 저장합니다.
+1. 변경 내용을 코드 파일에 저장합니다.
 
 ## 애플리케이션 실행
 

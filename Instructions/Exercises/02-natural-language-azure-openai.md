@@ -45,9 +45,9 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 > **참고**: Azure AI Foundry 포털을 사용하면 수행할 작업을 제안하는 메시지 상자가 표시될 수 있습니다. 이를 닫고 이 연습의 단계를 따를 수 있습니다.
 
 1. Azure Portal의 Azure OpenAI 리소스에 대한 **개요** 페이지에서 **시작** 섹션까지 아래로 스크롤하여 **AI Foundry 포털**(이전에는 AI 스튜디오)로 이동하는 단추를 선택합니다.
-1. Azure OpenAI Foundry 의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+1. Azure OpenAI Foundry 의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-4o** 모델의 새 배포를 생성합니다.
     - **배포 이름**: ‘원하는 고유한 이름’**
-    - **모델**: gpt-35-turbo-16k *(16k 모델을 사용할 수 없는 경우 gpt-35-turbo 선택)*
+    - **모델**: gpt-4o
     - **모델 버전**: *기본 버전 사용*
     - **배포 유형**: 표준
     - **분당 토큰 속도 제한**: 5K\*
@@ -63,7 +63,7 @@ Visual Studio Code를 사용하여 Azure OpenAI 앱을 개발합니다. 앱의 �
 > **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
 1. Visual Studio Code 시작
-2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+2. 명령 팔레트(SHIFT+CTRL+P 또는 **보기** > **명령 팔레트...**)를 열고 **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더에 복제합니다(어떤 폴더든 상관없습니다).
 3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
     > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
@@ -81,21 +81,21 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
 
     **C#:**
 
-    ```
-    dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.14
+    ```powershell
+    dotnet add package Azure.AI.OpenAI --version 2.1.0
     ```
 
     **Python**:
 
-    ```
-    pip install openai==1.55.3
+    ```powershell
+    pip install openai==1.65.2
     ```
 
 3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
-    
+
 4. 다음을 포함하도록 구성 값을 업데이트합니다.
     - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
     - 모델 배포에 대해 지정한 **배포 이름**(Azure AI Foundry 포털의 **배포** 페이지에서 사용 가능).
@@ -110,12 +110,13 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
     **C#**: Program.cs
 
     ```csharp
-    // Add Azure OpenAI package
+    // Add Azure OpenAI packages
     using Azure.AI.OpenAI;
+    using OpenAI.Chat;
     ```
-    
+
     **Python**: test-openai-model.py
-    
+
     ```python
     # Add Azure OpenAI package
     from openai import AzureOpenAI
@@ -127,7 +128,8 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
 
     ```csharp
     // Initialize the Azure OpenAI client
-    OpenAIClient client = new OpenAIClient(new Uri(oaiEndpoint), new AzureKeyCredential(oaiKey));
+    AzureOpenAIClient azureClient = new (new Uri(oaiEndpoint), new ApiKeyCredential(oaiKey));
+    ChatClient chatClient = azureClient.GetChatClient(oaiDeploymentName);
     
     // System message to provide context to the model
     string systemMessage = "I am a hiking enthusiast named Forest who helps people discover hikes in their area. If no area is specified, I will default to near Rainier National Park. I will then provide three suggestions for nearby hikes that vary in length. I will also share an interesting fact about the local nature on the hikes when making a recommendation.";
@@ -151,31 +153,28 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
         """
     ```
 
-1. ***요청을 보낼 코드 추가...*** 주석을 요청 빌드에 필요한 코드로 바꿉니다. `messages` 및 `temperature`와 같은 모델에 대한 다양한 매개 변수를 지정합니다.
+1. ***요청을 보낼 코드 추가...*** 주석을 요청 빌드에 필요한 코드로 바꿉니다. `Temperature` 및 `MaxOutputTokenCount`와 같은 모델에 대한 다양한 매개 변수를 지정합니다.
 
     **C#**: Program.cs
 
     ```csharp
     // Add code to send request...
-    // Build completion options object
-    ChatCompletionsOptions chatCompletionsOptions = new ChatCompletionsOptions()
+    // Get response from Azure OpenAI
+    ChatCompletionOptions chatCompletionOptions = new ChatCompletionOptions()
     {
-        Messages =
-        {
-            new ChatRequestSystemMessage(systemMessage),
-            new ChatRequestUserMessage(inputText),
-        },
-        MaxTokens = 400,
         Temperature = 0.7f,
-        DeploymentName = oaiDeploymentName
+        MaxOutputTokenCount = 800
     };
 
-    // Send request to Azure OpenAI model
-    ChatCompletions response = client.GetChatCompletions(chatCompletionsOptions);
+    ChatCompletion completion = chatClient.CompleteChat(
+        [
+            new SystemChatMessage(systemMessage),
+            new UserChatMessage(inputText)
+        ],
+        chatCompletionOptions
+    );
 
-    // Print the response
-    string completion = response.Choices[0].Message.Content;
-    Console.WriteLine("Response: " + completion + "\n");
+    Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
     ```
 
     **Python**: test-openai-model.py
@@ -232,9 +231,9 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
 
     ```csharp
     // Initialize messages list
-    var messagesList = new List<ChatRequestMessage>()
+    var messagesList = new List<ChatMessage>()
     {
-        new ChatRequestSystemMessage(systemMessage),
+        new SystemChatMessage(systemMessage),
     };
     ```
 
@@ -252,31 +251,26 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
     ```csharp
     // Add code to send request...
     // Build completion options object
-    messagesList.Add(new ChatRequestUserMessage(inputText));
+    messagesList.Add(new UserChatMessage(inputText));
 
-    ChatCompletionsOptions chatCompletionsOptions = new ChatCompletionsOptions()
+    ChatCompletionOptions chatCompletionOptions = new ChatCompletionOptions()
     {
-        MaxTokens = 1200,
         Temperature = 0.7f,
-        DeploymentName = oaiDeploymentName
+        MaxOutputTokenCount = 800
     };
 
-    // Add messages to the completion options
-    foreach (ChatRequestMessage chatMessage in messagesList)
-    {
-        chatCompletionsOptions.Messages.Add(chatMessage);
-    }
-
-    // Send request to Azure OpenAI model
-    ChatCompletions response = client.GetChatCompletions(chatCompletionsOptions);
+    ChatCompletion completion = chatClient.CompleteChat(
+        messagesList,
+        chatCompletionOptions
+    );
 
     // Return the response
-    string completion = response.Choices[0].Message.Content;
+    string response = completion.Content[0].Text;
 
     // Add generated text to messages list
-    messagesList.Add(new ChatRequestAssistantMessage(completion));
+    messagesList.Add(new AssistantChatMessage(response));
 
-    Console.WriteLine("Response: " + completion + "\n");
+    Console.WriteLine("Response: " + response + "\n");
     ```
 
     **Python**: test-openai-model.py
@@ -310,7 +304,7 @@ C# 및 Python용 애플리케이션이 모두 제공되었습니다. 두 앱 모
 1. 출력을 관찰한 후 `How difficult is the second hike you suggested?` 프롬프트를 표시합니다.
 1. 모델이 제안한 두 번째 하이킹에 대한 응답을 가져올 가능성이 높으며 이는 훨씬 더 현실적인 대화를 제공합니다. 이전 답변을 참조하여 추가 후속 질문을 할 수 있으며 기록이 모델이 답변할 컨텍스트를 제공할 때마다 가능합니다.
 
-    > **팁**: 토큰 수는 1200으로만 설정되므로 대화가 너무 오래 지속되면 애플리케이션에 사용 가능한 토큰이 부족해 불완전한 프롬프트가 표시됩니다. 프로덕션 용도에서는 기록 길이를 가장 최근의 입력 및 응답으로 제한하면 필요한 토큰 수를 제어하는 데 도움이 됩니다.
+    > **팁**: 출력 토큰 수가 800개로만 설정되어 있으므로 대화가 너무 오래 계속되면 애플리케이션에서 사용 가능한 토큰이 부족하여 불완전한 프롬프트가 표시됩니다. 프로덕션 용도에서는 기록 길이를 가장 최근의 입력 및 응답으로 제한하면 필요한 토큰 수를 제어하는 데 도움이 됩니다.
 
 ## 정리
 
