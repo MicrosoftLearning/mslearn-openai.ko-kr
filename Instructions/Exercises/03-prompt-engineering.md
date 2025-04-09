@@ -45,9 +45,9 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 > **참고**: Azure AI Foundry 포털을 사용하면 수행할 작업을 제안하는 메시지 상자가 표시될 수 있습니다. 이를 닫고 이 연습의 단계를 따를 수 있습니다.
 
 1. Azure Portal의 Azure OpenAI 리소스에 대한 **개요** 페이지에서 **시작** 섹션까지 아래로 스크롤하여 **AI Foundry 포털**(이전에는 AI 스튜디오)로 이동하는 단추를 선택합니다.
-1. Azure OpenAI Foundry 의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-35-turbo-16k** 모델의 새 배포를 만듭니다.
+1. Azure OpenAI Foundry 의 왼쪽 창에서 **배포** 페이지를 선택하고 기존 모델 배포를 확인합니다. 아직 없는 경우 다음 설정을 사용하여 **gpt-4o** 모델의 새 배포를 생성합니다.
     - **배포 이름**: ‘원하는 고유한 이름’**
-    - **모델**: gpt-35-turbo-16k *(16k 모델을 사용할 수 없는 경우 gpt-35-turbo 선택)*
+    - **모델**: gpt-4o
     - **모델 버전**: *기본 버전 사용*
     - **배포 유형**: 표준
     - **분당 토큰 속도 제한**: 5K\*
@@ -63,9 +63,9 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 1. 왼쪽 창의 **플레이그라운드** 섹션에서 **채팅** 페이지를 선택합니다. **채팅** 플레이그라운드 페이지는 단추 행과 두 가지 기본 패널로 구성됩니다(화면 해상도에 따라 오른쪽에서 왼쪽으로 수평으로 배열되거나 위에서 아래로 수직으로 배열될 수 있음).
     - **설정** - 배포를 선택하고, 시스템 메시지를 정의하고, 배포와 상호 작용하기 위한 매개 변수를 설정하는 데 사용됩니다.
     - **채팅 기록** - 채팅 메시지를 제출하고 응답을 보는 데 사용됩니다.
-2. **배포**에서 gpt-35-turbo-16k 모델 배포가 선택되어 있는지 확인합니다.
+1. **배포**에서 gpt-4o model 모델 배포가 선택되어 있는지 확인합니다.
 1. 선택한 배포 바로 아래 텍스트 상자에 포함된 기본 시스템 메시지를 검토합니다. 이 메시지는 *당신은 사람들이 정보를 찾을 수 있도록 도와주는 AI 도우미입니다*로 표시되어야 합니다.
-4. **채팅 기록**에서 다음 쿼리를 제출합니다.
+1. **채팅 기록**에서 다음 쿼리를 제출합니다.
 
     ```prompt
     What kind of article is this?
@@ -81,12 +81,12 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
     응답에는 문서에 대한 설명이 제공됩니다. 그러나 문서 분류를 위해 보다 구체적인 형식을 원한다고 가정해 보겠습니다.
 
-5. **설정** 섹션에서 시스템 메시지를 `You are a news aggregator that categorizes news articles.`로 변경
+1. **설정** 섹션에서 시스템 메시지를 `You are a news aggregator that categorizes news articles.`로 변경
 
-6. 새 시스템 메시지에서 **섹션 추가** 단추를 선택하고  **예제**를 선택합니다. 그리고 다음 예를 추가합니다.
+1. 새 시스템 메시지에서 **섹션 추가** 단추를 선택하고  **예제**를 선택합니다. 그리고 다음 예를 추가합니다.
 
     **사용자**:
-    
+
     ```prompt
     What kind of article is this?
     ---
@@ -98,17 +98,17 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
     
     The Chicago Cyclones' two hits came in the 2nd and the 5th innings but were unable to get the runner home to score.
     ```
-    
+
     **도우미:**
-    
+
     ```prompt
     Sports
       ```
 
-7. 다음 텍스트로 다른 예를 추가합니다.
+1. 다음 텍스트로 다른 예를 추가합니다.
 
     **사용자**:
-    
+
     ```prompt
     Categorize this article:
     ---
@@ -121,16 +121,16 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
     
     From Robin Kline's history-making win to a full performance by none other than Casey Jensen herself, don't miss tomorrows rerun of all the festivities.
     ```
-    
+
     **도우미:**
-    
+
     ```prompt
     Entertainment
     ```
 
-8. **설정** 섹션의 시스템 메시지 텍스트 상자 아래에 있는 **변경 내용 적용** 단추를 사용하여 변경 내용을 저장합니다.
+1. **설정** 섹션의 시스템 메시지 텍스트 상자 아래에 있는 **변경 내용 적용** 단추를 사용하여 변경 내용을 저장합니다.
 
-9. **채팅 기록** 섹션에서 다음 프롬프트를 다시 제출합니다.
+1. **채팅 기록** 섹션에서 다음 프롬프트를 다시 제출합니다.
 
     ```prompt
     What kind of article is this?
@@ -146,9 +146,9 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
     보다 구체적인 시스템 메시지와 예상되는 쿼리 및 응답의 몇 가지 예를 조합하면 일관된 결과 형식이 생성됩니다.
 
-10. 시스템 메시지를 기본 템플릿으로 다시 변경합니다. 기본 템플릿은 예제 없는 `You are an AI assistant that helps people find information.`이어야 합니다. 그런 다음 변경 내용을 적용합니다.
+1. 시스템 메시지를 기본 템플릿으로 다시 변경합니다. 기본 템플릿은 예제 없는 `You are an AI assistant that helps people find information.`이어야 합니다. 그런 다음 변경 내용을 적용합니다.
 
-11. **채팅 기록** 섹션에서 다음 프롬프트를 제출합니다.
+1. **채팅 기록** 섹션에서 다음 프롬프트를 제출합니다.
 
     ```prompt
     # 1. Create a list of animals
@@ -158,10 +158,10 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 
     모델은 프롬프트를 충족하기 위해 번호를 매긴 목록으로 나눈 답변으로 응답합니다. 이는 적절한 응답이지만 실제로 원하는 것이 모델이 설명된 작업을 수행하는 Python 프로그램을 작성하는 것이라고 가정해 보겠습니다.
 
-12. 시스템 메시지를 `You are a coding assistant helping write python code.`로 변경하고 변경 내용을 적용합니다.
-13. 모델에 다음 프롬프트를 다시 제출합니다.
+1. 시스템 메시지를 `You are a coding assistant helping write python code.`로 변경하고 변경 내용을 적용합니다.
+1. 모델에 다음 프롬프트를 다시 제출합니다.
 
-    ```
+    ```prompt
     # 1. Create a list of animals
     # 2. Create a list of whimsical names for those animals
     # 3. Combine them randomly into a list of 25 animal and name pairs
@@ -176,7 +176,7 @@ Azure는 모델을 배포, 관리 및 탐색하는 데 사용할 수 있는 **Az
 > **팁**: **mslearn-openai** 리포지토리를 이미 복제한 경우 Visual Studio Code에서 엽니다. 그렇지 않은 경우에는 다음 단계에 따라 개발 환경에 복제합니다.
 
 1. Visual Studio Code 시작
-2. 팔레트를 열고(Shift+Ctrl+P) **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 리포지토리를 로컬 폴더(아무 폴더나 관계없음)에 복제합니다.
+2. 팔레트(SHIFT+CTRL+P 또는 **보기** > **명령 팔레트...**)를 열고 **Git: Clone** 명령을 실행하여 `https://github.com/MicrosoftLearning/mslearn-openai` 저장소를 로컬 폴더에 복제합니다(어떤 폴더인지는 중요하지 않음).
 3. 리포지토리가 복제되면 Visual Studio Code에서 폴더를 엽니다.
 
     > **참고**: Visual Studio Code에서 열려는 코드를 신뢰하라는 팝업 메시지가 표시되면 팝업에서 **예, 작성자를 신뢰합니다.** 옵션을 클릭합니다.
@@ -194,21 +194,21 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
     **C#:**
 
-    ```
-    dotnet add package Azure.AI.OpenAI --version 1.0.0-beta.14
+    ```powershell
+    dotnet add package Azure.AI.OpenAI --version 2.1.0
     ```
 
     **Python**:
 
-    ```
-    pip install openai==1.55.3
+    ```powershell
+    pip install openai==1.65.2
     ```
 
 3. **탐색기** 창의 **CSharp** 또는 **Python** 폴더에서 기본 설정 언어에 대한 구성 파일을 엽니다.
 
     - **C#**: appsettings.json
     - **Python**: .env
-    
+
 4. 다음을 포함하도록 구성 값을 업데이트합니다.
     - 만든 Azure OpenAI 리소스의 **엔드포인트** 및 **키**(Azure Portal의 Azure OpenAI 리소스에 대한 **키 및 엔드포인트** 페이지에서 사용 가능)
     - 모델 배포에 대해 지정한 **배포 이름**(Azure AI Foundry 포털의 **배포** 페이지에서 사용 가능).
@@ -225,6 +225,7 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
     ```csharp
     // Add Azure OpenAI package
     using Azure.AI.OpenAI;
+    using OpenAI.Chat;
     ```
 
     **Python**: prompt-engineering.py
@@ -240,7 +241,8 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
     ```csharp
     // Configure the Azure OpenAI client
-    OpenAIClient client = new OpenAIClient(new Uri(oaiEndpoint), new AzureKeyCredential(oaiKey));
+    AzureOpenAIClient azureClient = new (new Uri(oaiEndpoint), new ApiKeyCredential(oaiKey));
+    ChatClient chatClient = azureClient.GetChatClient(oaiDeploymentName);
     ```
 
     **Python**: prompt-engineering.py
@@ -260,20 +262,19 @@ C# 및 Python용 애플리케이션이 모두 제공되었으며 두 앱 모두 
 
     ```csharp
     // Format and send the request to the model
-    var chatCompletionsOptions = new ChatCompletionsOptions()
+    var chatCompletionsOptions = new ChatCompletionOptions()
     {
-        Messages =
-        {
-            new ChatRequestSystemMessage(systemMessage),
-            new ChatRequestUserMessage(userMessage)
-        },
         Temperature = 0.7f,
-        MaxTokens = 800,
-        DeploymentName = oaiDeploymentName
+        MaxOutputTokenCount = 800
     };
     
     // Get response from Azure OpenAI
-    Response<ChatCompletions> response = await client.GetChatCompletionsAsync(chatCompletionsOptions);
+    ChatCompletion response = await chatClient.CompleteChatAsync(
+        [
+            new SystemChatMessage(systemMessage),
+            new UserChatMessage(userMessage),
+        ],
+        chatCompletionsOptions);
     ```
 
     **Python**: prompt-engineering.py
