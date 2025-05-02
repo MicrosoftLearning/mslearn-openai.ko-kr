@@ -20,16 +20,16 @@ lab:
     ![Azure AI Foundry 포털의 스크린샷.](../media/ai-foundry-home.png)
 
 1. 홈페이지에서 **+ 프로젝트 만들기**를 선택합니다.
-1. **프로젝트 만들기** 마법사에서 적절한 프로젝트 이름(예`my-ai-project`: )을 입력한 다음, 프로젝트를 지원하기 위해 자동으로 만들어지는 Azure 리소스를 검토합니다.
+1. **프로젝트 만들기** 마법사에서 유효한 프로젝트 이름을 입력하고 기존 허브가 추천되면 새 허브를 만드는 옵션을 선택합니다. 그런 다음 허브 및 프로젝트를 지원하기 위해 자동으로 만들어지는 Azure 리소스를 검토합니다.
 1. **사용자 지정**을 선택하고 허브에 대해 다음 설정을 지정합니다.
-    - **허브 이름**: *고유한 이름 - 예: `my-ai-hub`*
+    - **허브 이름**: *허브에서 유효한 이름*
     - **구독**: ‘Azure 구독’
-    - **리소스 그룹**: *고유한 이름(예: `my-ai-resources`)으로 새 리소스 그룹을 만들거나 기존 리소스 그룹 선택*
+    - **리소스 그룹**: ‘리소스 그룹 만들기 또는 선택’
     - **위치**: **선택 도움말**을 선택한 다음 위치 도우미 창에서 **dalle**를 선택하고 추천 지역을 사용합니다.\*
-    - **Azure AI Services 또는 Azure OpenAI** 연결: *적절한 이름으로 새 AI Services 리소스를 만들거나(예 `my-ai-services`:) 기존 리소스를 사용합니다.*
+    - **Azure AI 서비스 또는 Azure OpenAI 연결**: *새 AI 서비스 리소스 만들기*
     - **Azure AI 검색 연결**: 연결 건너뛰기
 
-    > \* Azure OpenAI 리소스는 지역 할당량에 따라 테넌트 수준에서 제한됩니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
+    > \* Azure OpenAI 리소스는 지역 할당량에 따라 제한됩니다. 연습 후반부에 할당량 한도에 도달하는 경우 다른 지역에서 다른 리소스를 만들어야 할 수도 있습니다.
 
 1. **다음**을 선택하여 구성을 검토합니다. **만들기**를 선택하고 프로세스가 완료될 때까지 기다립니다.
 1. 프로젝트를 만들 때 표시되는 팁을 모두 닫고 Azure AI 파운드리 포털에서 프로젝트 페이지를 검토합니다. 이 페이지는 다음 이미지와 유사합니다.
@@ -40,12 +40,12 @@ lab:
 
 이제 이미지 생성을 지원하기 위해 DALL-E 모델을 배포할 준비가 되었습니다.
 
-1. Azure AI 파운드리 프로젝트 페이지의 오른쪽 위에 있는 도구 모음에서 **미리 보기 기능** 아이콘을 사용하여 **Azure AI 모델 유추 서비스 기능에 모델 배포**를 사용하도록 설정합니다.
+1. Azure AI 파운드리 프로젝트 페이지의 오른쪽 위에 있는 도구 모음에서 **미리 보기 기능** 아이콘을 사용하여 **Azure AI 모델 유추 서비스 기능에 모델 배포**를 사용하도록 설정합니다. 이 기능을 사용하면 애플리케이션 코드에서 사용할 Azure AI 유추 서비스에서 모델 배포를 사용할 수 있습니다.
 1. 프로젝트 왼쪽 창의 **내 자산** 섹션에서 **모델 + 엔드포인트** 페이지를 선택합니다.
 1. **모델 + 엔드포인트** 페이지의 **모델 배포** 탭의 **+ 모델 배포** 메뉴에서 **기본 모델 배포**를 선택합니다.
 1. 목록에서 **dall-e-3** 모델을 검색한 다음 선택하고 확인합니다.
 1. 메시지가 표시되면 사용권 계약에 동의한 다음 배포 세부 정보에서 **사용자 지정**을 선택하여 다음 설정을 사용하여 모델을 배포합니다.
-    - **배포 이름**: *모델 배포의 고유한 이름입니다. 예를 들어 `dall-e-3`(할당한 이름을 기억하세요. 나중에* 필요합니다.)
+    - **배포 이름**: *모델 배포에 대한 고유한 이름*
     - **배포 유형**: 표준
     - **배포 세부 정보**: *기본 설정 사용*
 1. 배포 프로비전 상태가 **완료**될 때까지 기다립니다.
@@ -78,20 +78,20 @@ lab:
 
     > **참고**: 이전에 *Bash* 환경을 사용하는 Cloud Shell을 만든 경우 ***PowerShell***로 전환합니다.
 
-1. Cloud Shell 도구 모음의 **설정** 메뉴에서 **클래식 버전으로 이동**을 선택합니다(코드 편집기를 사용하는 데 필요).
+5. Cloud Shell 도구 모음의 **설정** 메뉴에서 **클래식 버전으로 이동**을 선택합니다(코드 편집기를 사용하는 데 필요).
 
-    > **팁**: CloudShell에 명령을 붙여넣을 때, 출력이 화면 버퍼의 많은 부분을 차지할 수 있습니다. `cls` 명령을 입력해 화면을 지우면 각 작업에 더 집중할 수 있습니다.
+    **<font color="red">계속하기 전에 Cloud Shell의 클래식 버전으로 전환했는지 확인합니다.</font>**
 
-1. PowerShell 창에서 다음 명령을 입력하여 이 연습이 포함된 GitHub 리포지토리를 복제합니다.
+1. Cloud Shell 창에서 다음 명령을 입력하여 이 연습의 코드 파일이 포함된 GitHub 리포지토리를 복제합니다(명령을 입력하거나 클립보드에 복사한 다음 명령줄을 마우스 오른쪽 단추로 클릭하여 일반 텍스트로 붙여넣습니다).
 
     ```
     rm -r mslearn-openai -f
     git clone https://github.com/microsoftlearning/mslearn-openai mslearn-openai
     ```
 
-> **참고**: 선택한 프로그래밍 언어에 대한 단계를 따릅니다.
+    > **팁**: CloudShell에 명령을 붙여넣을 때, 출력이 화면 버퍼의 많은 부분을 차지할 수 있습니다. `cls` 명령을 입력해 화면을 지우면 각 작업에 더 집중할 수 있습니다.
 
-1. 리포지토리가 복제된 후 애플리케이션 코드 파일이 포함된 폴더로 이동합니다.  
+1. 리포지토리가 복제된 후 선택한 프로그래밍 언어(Python 또는 C#)에 따라 애플리케이션 코드 파일이 포함된 언어별 폴더로 이동합니다.  
 
     **Python**
 
@@ -110,10 +110,10 @@ lab:
     **Python**
 
     ```
+   python -m venv labenv
+   ./labenv/bin/Activate.ps1
    pip install python-dotenv azure-identity azure-ai-projects openai requests
     ```
-
-    *pip 버전 및 로컬 경로에 대한 오류를 무시할 수 있습니다.*
 
     **C#**
 
@@ -164,7 +164,8 @@ lab:
 
     **Python**
 
-    ```
+    ```python
+   # Add references
    from dotenv import load_dotenv
    from azure.identity import DefaultAzureCredential
    from azure.ai.projects import AIProjectClient
@@ -174,7 +175,8 @@ lab:
 
     **C#**
 
-    ```
+    ```csharp
+   // Add references
    using Azure.Identity;
    using Azure.AI.Projects;
    using Azure.AI.OpenAI;
@@ -186,7 +188,8 @@ lab:
 
     **Python**
 
-    ```
+    ```python
+   # Initialize the project client
    project_client = AIProjectClient.from_connection_string(
         conn_str=project_connection,
         credential=DefaultAzureCredential())
@@ -194,7 +197,8 @@ lab:
 
     **C#**
 
-    ```
+    ```csharp
+   // Initialize the project client
    var projectClient = new AIProjectClient(project_connection,
                         new DefaultAzureCredential());
     ```
@@ -203,14 +207,16 @@ lab:
 
     **Python**
 
-    ```
+    ```python
+   # Get an OpenAI client
    openai_client = project_client.inference.get_azure_openai_client(api_version="2024-06-01")
 
     ```
 
     **C#**
 
-    ```
+    ```csharp
+   // Get an OpenAI client
    ConnectionResponse connection = projectClient.GetConnectionsClient().GetDefaultConnection(ConnectionType.AzureOpenAI, withCredential: true);
 
    var connectionProperties = connection.Properties as ConnectionPropertiesApiKeyAuth;
@@ -228,6 +234,7 @@ lab:
     **Python**
 
     ```python
+   # Generate an image
    result = openai_client.images.generate(
         model=model_deployment,
         prompt=input_text,
@@ -240,7 +247,8 @@ lab:
 
     **C#**
 
-    ```
+    ```csharp
+   // Generate an image
    var imageGeneration = await openAIimageClient.GenerateImageAsync(
             input_text,
             new ImageGenerationOptions()
@@ -276,15 +284,13 @@ lab:
 
     > **참고**: 이 간단한 앱에서는 대화 내용을 유지하는 논리를 구현하지 않았으므로 모델은 각 프롬프트를 이전 프롬프트의 컨텍스트 없이 새 요청으로 처리합니다.
 
-1. 앱에서 생성된 이미지를 다운로드하고 보려면 Cloud Shell 창의 도구 모음에서 **파일 업로드/다운로드** 단추를 사용하여 파일을 다운로드한 다음 엽니다. 파일을 다운로드하려면 다운로드 인터페이스에서 파일 경로를 완료합니다. 예:
+1. 앱에서 생성된 이미지를 다운로드하고 보려면 Cloud Shell **다운로드** 명령을 사용하여 생성된 .png 파일을 지정합니다.
 
-    **Python**
+    ```
+   download ./images/image_1.png
+    ```
 
-    /home/*user*`/mslearn-openai/Labfiles/03-image-generation/Python/images/image_1.png`
-
-    **C#**
-
-    /home/*user*`/mslearn-openai/Labfiles/03-image-generation/CSharp/images/image_1.png`
+    다운로드 명령은 브라우저의 오른쪽 아래에 팝업 링크를 만듭니다. 이 링크를 선택하여 파일을 다운로드하고 열 수 있습니다.
 
 ## 요약
 

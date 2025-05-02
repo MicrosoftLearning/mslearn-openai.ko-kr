@@ -25,15 +25,13 @@ Azure OpenAI Service를 사용하면 기본 LLM의 인텔리전스와 함께 자
     - **구독**: *Azure OpenAI 서비스에 대한 액세스가 승인된 Azure 구독 선택*
     - **리소스 그룹**: *리소스 그룹 선택 또는 만들기*
     - **지역**: *다음 지역 중 하나를 **임의로** 선택합니다.*\*
-        - 캐나다 동부
         - 미국 동부
         - 미국 동부 2
-        - 프랑스 중부
-        - 일본 동부
         - 미국 중북부
+        - 미국 중남부
         - 스웨덴 중부
-        - 스위스 북부
-        - 영국 남부
+        - 미국 서부
+        - 미국 서부 3
     - **이름**: ‘원하는 고유한 이름’**
     - **가격 책정 계층**: 표준 S0
 
@@ -76,7 +74,11 @@ Azure OpenAI Service를 사용하면 기본 LLM의 인텔리전스와 함께 자
 
 ## 모델 배포
 
-다음으로 CLI에서 Azure OpenAI 모델 리소스를 배포합니다. Azure Portal에서 위쪽 메뉴 모음에서 **Cloud Shell** 아이콘을 선택하고 터미널이 **Bash**로 설정되어 있는지 확인합니다. 이 예제를 사용하여 다음 변수를 사용자 고유의 값으로 바꿉니다.
+다음으로 Cloud Shell에서 Azure OpenAI 모델을 배포합니다.
+
+1. 페이지 상단의 검색 창 오른쪽에 있는 **[\>_]** 단추를 사용하여 Azure Portal에서 새 Cloud Shell을 만들고 ***Bash*** 환경을 선택합니다. Cloud Shell은 다음과 같이 Azure Portal 아래쪽 창에 명령줄 인터페이스를 제공합니다.
+
+    > **참고**: 이전에 *PowerShell* 환경을 사용하는 Cloud Shell을 만든 경우 ***Bash***로 전환합니다.
 
 ```dotnetcli
 az cognitiveservices account deployment create \
